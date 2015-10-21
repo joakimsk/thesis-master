@@ -1,0 +1,17 @@
+# Follow this:
+http://docs.opencv.org/doc/tutorials/introduction/linux_install/linux_install.html#linux-installation
+
+# Download OpenCV 3.0 sourcecode from Sourcecode
+
+# Install OpenCL following this:
+http://wiki.tiker.net/OpenCLHowTo
+# ^ APP SDK 3.0 for Linux 64-bit
+
+# Also install AMD OpenCL drivers for the GPU
+http://support.amd.com/en-us/kb-articles/Pages/OpenCL2-Driver.aspx
+
+# Generate generic driver package
+# Needs dependencies:
+sudo aptitude install execstack
+sudo aptitude install dh-modaliases
+
