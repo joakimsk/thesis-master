@@ -15,3 +15,12 @@ http://support.amd.com/en-us/kb-articles/Pages/OpenCL2-Driver.aspx
 sudo aptitude install execstack
 sudo aptitude install dh-modaliases
 
+
+# Read more here
+https://forums.kali.org/showthread.php?22761-%28Guide%29-Installing-Fglrx-OpenCL-Pryit-for-AMD-Video-cards
+
+# sudo aptitude install pyrit
+
+pyrit list_cores
+
+# sudo install libopencv-dev
