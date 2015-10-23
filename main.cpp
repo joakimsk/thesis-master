@@ -1,7 +1,11 @@
-#include <stdio.h>
-#include <iostream>
 #include "curl_easy.h"
 #include <CL/cl.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgcodecs/imgcodecs.hpp>
+
+#include <stdio.h>
+#include <iostream>
 
 using curl::curl_easy;
 
@@ -82,6 +86,14 @@ int main(){
     for(int i=0;i<10;i++){
         std::cout<<C[i]<<" ";
     }
+
+    std::cout << "Starting OpenCV" << endl;
+
+    cv::Mat image;
+    image = cv::imread("test.jpg",cv::IMREAD_COLOR);
+    cv::namedWindow("Window",cv::WINDOW_AUTOSIZE);
+    cv::imshow("Window", image);
+    cv::waitKey(0);
 
     curl_easy easy;
     printf("Main ran");
