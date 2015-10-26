@@ -1,0 +1,29 @@
+HTTP/1.0 200 OK
+Authentication-Info: rspauth="4faa5559dfa24fdd01a4de445ed07334", cnonce="OTE1ZTBiNjNiOWFhMTdlNDc3ZWQzYzczZjhjMWY3ZWM=", nc=00000001, qop=auth
+Cache-Control: no-cache, no-store
+Pragma: no-cache
+Expires: Thu, Jan 01 1970 01:00:00 GMT
+Content-Type: text/plain
+Content-Length: 288
+
+pan=-26.9040
+tilt=-0.0110
+zoom=1
+iris=3563
+focus=1600
+autofocus=on
+autoiris=off
+MinPan=-180
+MaxPan=180
+MinTilt=0
+MaxTilt=180
+MinZoom=1
+MaxZoom=10909
+MinIris=1
+MaxIris=9999
+MinFocus=4
+MaxFocus=9999
+MinFieldAngle=34
+MaxFieldAngle=613
+MinBrightness=1
+MaxBrightness=9999

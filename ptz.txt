@@ -1,0 +1,21 @@
+ptz.cgi
+
+camera=?
+continouspantiltmove=0,0
+
+timestamp=unix timestamp (4+4+5=13 characters)
+ctime only gives 10
+
+query=postion,limits
+html=no
+
+// Absolute One-shot movement
+
+pan=-42.1 // ABSOLUTE PAN
+tilt=90.0 // ABOSLUTE TILT
+
+// Relative continous movement, requires timestamp milliseconds! Also seems to require to be logged in...?
+continouspantiltmove=<pan>,<tilt>
+
+
+imagerotation=180

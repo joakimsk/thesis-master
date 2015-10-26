@@ -3,7 +3,7 @@
 #include <string>
 #include <termios.h>
 #include <unistd.h>
-
+#include <chrono>
 
 #include "axis.h"
 
@@ -60,20 +60,31 @@ void Axis::Connect(){
     curl_pair<CURLformoption,string> pass_form(CURLFORM_COPYNAME,"passw");
     curl_pair<CURLformoption,string> pass_cont(CURLFORM_COPYCONTENTS,"your password here");
 
+	std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
+	std::cout << ms.count() << std::endl;
+
+	// Virker ikke om man ikke allerede er logget inn...?
+	//std::string query_string = "?camera=" + std::to_string(camera_) + "&continouspantiltmove=15.0,15.0&timestamp=" + std::to_string(ms.count());
+
+	// Virker ikke om man ikke allerede er logget inn...?
+	std::string query_string = "?query=position,limits&camera=" + std::to_string(camera_) + "&html=no&timestamp=" + std::to_string(ms.count());
+
+
     try {
        form.add(name_form,name_cont);
        form.add(pass_form,pass_cont);
 
 
-       easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,1L));
+       //easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,1L));
 
-       easy.add(curl_pair<CURLoption,string>(CURLOPT_URL,"http://129.241.154.24/axis-cgi/com/ptz.cgi"));
+       easy.add(curl_pair<CURLoption,string>(CURLOPT_URL,"http://129.241.154.24/axis-cgi/com/ptz.cgi" + query_string));
        easy.add(curl_pair<CURLoption,long>(CURLOPT_FOLLOWLOCATION,1L));
        easy.add(curl_pair<CURLoption,string>(CURLOPT_USERAGENT,"Mozilla/4.0"));
-       easy.add(curl_pair<CURLoption,curl_form>(CURLOPT_HTTPPOST,form));
        easy.add(curl_pair<CURLoption,long>(CURLOPT_HTTPAUTH,CURLAUTH_DIGEST)); // Bitmask for MD5 Digest
        easy.add(curl_pair<CURLoption,string>(CURLOPT_USERNAME,"root"));
        easy.add(curl_pair<CURLoption,string>(CURLOPT_PASSWORD,pw_));
+       easy.add(curl_pair<CURLoption,long>(CURLOPT_NOBODY,1L));
+
 
        easy.perform();
 

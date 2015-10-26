@@ -22,6 +22,7 @@ class Axis {
     private:
         std::string ip_ = "0.0.0.0";
         std::string pw_ = "";
+        uint camera_ = 1;
 };
 
 #endif
