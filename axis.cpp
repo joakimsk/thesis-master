@@ -7,6 +7,8 @@
 
 #include "axis.h"
 
+#include "curl_easy.h"
+
 using curl::curl_easy;
 using curl::curl_form;
 

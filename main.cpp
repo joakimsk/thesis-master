@@ -89,7 +89,7 @@ int main(int ac, char** av) {
     std::cout << "# haveAmdFft = " << cv::ocl::haveAmdFft() << endl;
     std::cout << "# haveSVM = " << cv::ocl::haveSVM() << endl;
 
-    cv::ocl::setUseOpenCL(false);
+    cv::ocl::setUseOpenCL(true);
 
     cv::ocl::Context ocl_context;
     if (!ocl_context.create(cv::ocl::Device::TYPE_GPU))
@@ -110,17 +110,10 @@ int main(int ac, char** av) {
         help(av);
         return 1;
     }
+    
     //process(capture);
 
-
-
-
-
-
-
-
     printf("Main ran");
-
     Axis cctv("129.241.154.24");
     cctv.SetPassword();
     cctv.Connect();
