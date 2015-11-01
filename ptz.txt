@@ -1,5 +1,8 @@
 ptz.cgi
 
+mjpeg stream:
+http://129.241.154.24/mjpg/video.mjpg
+
 camera=?
 continouspantiltmove=0,0
 
@@ -17,5 +20,54 @@ tilt=90.0 // ABOSLUTE TILT
 // Relative continous movement, requires timestamp milliseconds! Also seems to require to be logged in...?
 continouspantiltmove=<pan>,<tilt>
 
-
 imagerotation=180
+
+// Pan Limits: [-180,180]
+http://129.241.154.24/axis-cgi/com/ptz.cgi?camera=1&pan=90
+
+curl --digest -u root http://129.241.154.24/axis-cgi/com/ptz.cgi?camera=1&pan=90.0
+
+// Tilt Limits: [0,90] normal action, <90,180] flips camera around axis
+curl --digest -u root http://129.241.154.24/axis-cgi/com/ptz.cgi?camera=1&tilt=90.0
+
+// Zoom Limits: [1,10909] normal action
+# Zoom 100%
+curl --digest -u root http://129.241.154.24/axis-cgi/com/ptz.cgi?camera=1&zoom=10909
+
+# Zoom 0%
+curl --digest -u root http://129.241.154.24/axis-cgi/com/ptz.cgi?camera=1&zoom=1
+
+// Query position and  limits of camera
+curl --digest -u root http://129.241.154.24/axis-cgi/com/ptz.cgi?query=position,limits&camera=1
+
+# Typical output position
+pan=23.8666
+tilt=69.9619
+zoom=1
+iris=3563
+focus=1200
+autofocus=on
+autoiris=off
+# Typical output limits
+MinPan=-180
+MaxPan=180
+MinTilt=0
+MaxTilt=180
+MinZoom=1
+MaxZoom=10909
+MinIris=1
+MaxIris=9999
+MinFocus=4
+MaxFocus=9999
+MinFieldAngle=34
+MaxFieldAngle=613
+MinBrightness=1
+MaxBrightness=9999
+
+MaxBrightness=9999
+
+// Query only limits
+curl --digest -u root http://129.241.154.24/axis-cgi/com/ptz.cgi?query=limits&camera=1
+
+// Continous pan tilt motion
+curl --digest -u root http://129.241.154.24/axis-cgi/com/ptz.cgi?camera=1&continouspantiltmove=10,10

@@ -114,6 +114,7 @@ int main(int ac, char** av) {
     //process(capture);
 
     printf("Main ran");
+    
     Axis cctv("129.241.154.24");
     cctv.SetPassword();
     cctv.Connect();

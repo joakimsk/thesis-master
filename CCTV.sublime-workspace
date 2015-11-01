@@ -1,1 +1,394 @@
-{}
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "axis.cpp",
+			"settings":
+			{
+				"buffer_size": 6501,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 424,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "axis.h",
+			"settings":
+			{
+				"buffer_size": 1071,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 369.0,
+		"last_filter": "Package Control: ",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Add Repository"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/joakimsk/Github/master_code"
+	],
+	"file_history":
+	[
+		"/Users/joakimsk/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/joakimsk/Github/master_code/CCTV.sublime-project",
+		"/Users/joakimsk/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/joakimsk/Github/master_code/axis.h",
+		"/Users/joakimsk/Github/master_code/axis.cpp",
+		"/Users/joakimsk/Github/master_code/main.cpp",
+		"/Users/joakimsk/Github/master_code/maketing.sh",
+		"/Users/joakimsk/Desktop/slett_passordliste_w7.bat",
+		"/Users/joakimsk/Github/master/py_gtrack/ptz.py",
+		"/Users/joakimsk/Desktop/timerorakel",
+		"/Volumes/OSX_DATA/Dropbox/Master Thesis/on_ubuntu",
+		"/Users/joakimsk/Desktop/joneiriktelefon",
+		"/Volumes/OSX_DATA/Dropbox/StatSnail/Homepage/root/style.css",
+		"/Users/joakimsk/thedark.tm2/project.yml",
+		"/Users/joakimsk/Desktop/referat.txt",
+		"/Users/joakimsk/Desktop/host.txt",
+		"/Users/joakimsk/Desktop/leroy",
+		"/Volumes/OSX_DATA/Dropbox/StatSnail/Første sending/statsnail_traces.txt",
+		"/Users/joakimsk/Desktop/ansvarlig.txt",
+		"/Users/joakimsk/Desktop/notes",
+		"/Users/joakimsk/Desktop/tingtilsnegler",
+		"/Volumes/OSX_DATA/playlist_b500000_w881953627.abst",
+		"/Users/joakimsk/sshpubkey",
+		"/Users/joakimsk/Desktop/pwd",
+		"/Users/joakimsk/Github/instabart/Gruntfile.js",
+		"/Users/joakimsk/c/makefile",
+		"/Users/joakimsk/c/hello.c",
+		"/Users/joakimsk/Github/rtl-sdr/src/rtl_adsb.c",
+		"/Users/joakimsk/Github/rtl_433/build/out.dat",
+		"/Users/joakimsk/Github/rtl_433/build/outtest.txt",
+		"/Users/joakimsk/Github/rtl_433/build/outtest2.txt",
+		"/Volumes/OSX_DATA/Dropbox/ProjectDepthSounder/commands.txt",
+		"/Users/joakimsk/Desktop/geojson-all.json",
+		"/Users/joakimsk/Github/farmbot-arduino-controller/README.md",
+		"/Users/joakimsk/Github/rtl_433/build/file1.dat",
+		"/Users/joakimsk/Desktop/Full_batteri.txt",
+		"/Users/joakimsk/Desktop/sshpubkey",
+		"/Users/joakimsk/Desktop/Alternative masteroppgaver.txt",
+		"/Users/joakimsk/Envs/env1/rw_bin/file.bin",
+		"/Users/joakimsk/Envs/env1/rw_bin/OUTPUT",
+		"/Users/joakimsk/Envs/env1/rw_bin/INPUT",
+		"/Volumes/OSX_DATA/Dropbox/EpleveienHubFiles/the_project-outside/the_project-master/py_gtrack/read_from_web_cam.py",
+		"/Volumes/OSX_DATA/Dropbox/EpleveienHubFiles/the_project-outside/the_project-master/raw_img_start.bin",
+		"/Volumes/OSX_DATA/Dropbox/Prosjektoppgave/Hack/GlyphAxisPy/mjpeg_axis.py",
+		"/Users/joakimsk/Desktop/posisioj",
+		"/Users/joakimsk/Downloads/Image30.lsm",
+		"/Volumes/OSX_DATA/Dropbox/StatSnail/JsonSnail/style.css",
+		"/Volumes/OSX_DATA/Dropbox/StatSnail/JsonSnail/index2.htm",
+		"/Volumes/OSX_DATA/Dropbox/StatSnail/JsonSnail/index.html",
+		"/Volumes/OSX_DATA/Dropbox/StatSnail/forslag_kjøp.txt",
+		"/Users/joakimsk/Desktop/LEONBREV",
+		"/Users/joakimsk/Documents/Arduino/JoakimTestingToPc/test.py",
+		"/Users/joakimsk/Desktop/PPTs ITS21/dag2/1030_mads_PREZI/url.txt",
+		"/Users/joakimsk/Desktop/EPOSTER ITS21",
+		"/Users/joakimsk/Desktop/maze.html",
+		"/Users/joakimsk/Desktop/Musikk og Globalisering",
+		"/Users/joakimsk/Downloads/joks/run.bat",
+		"/Users/joakimsk/Downloads/joks/log.txt",
+		"/Users/joakimsk/Downloads/joks/README.md",
+		"/Users/joakimsk/Downloads/joks/py_camsnapshot.py",
+		"/Users/joakimsk/Desktop/cams.csv",
+		"/Users/joakimsk/awk/run.sh",
+		"/Users/joakimsk/Downloads/Client.py",
+		"/Users/joakimsk/Desktop/vna",
+		"/Users/joakimsk/awk/calc.awk",
+		"/Users/joakimsk/Desktop/spring2015.csv",
+		"/Users/joakimsk/Sandbox/golang/hello.go",
+		"/Users/joakimsk/Sandbox/golang/app.yaml",
+		"/Users/joakimsk/Sandbox/golang/untitled.sh",
+		"/Users/joakimsk/Sandbox/nodetest/server.js",
+		"/Users/joakimsk/Sandbox/nodetest/hello.js",
+		"/Users/joakimsk/Sandbox/nodetest/2.js",
+		"/Users/joakimsk/Sandbox/nodetest/3.js",
+		"/Users/joakimsk/Sandbox/nodetest/ss.js",
+		"/Users/joakimsk/Sandbox/nodetest/socket.html",
+		"/Users/joakimsk/Sandbox/nodetest/css/bootstrap-theme.css",
+		"/Users/joakimsk/Sandbox/nodetest/css/bootstrap-theme.min.css",
+		"/Users/joakimsk/Sandbox/nodetest/helloworld.js",
+		"/Users/joakimsk/Desktop/Landsbyen.txt",
+		"/Users/joakimsk/Documents/glosguiden/index.html",
+		"/Users/joakimsk/Documents/itinfo/index.htm",
+		"/Users/joakimsk/Documents/skjeng/index.html",
+		"/Users/joakimsk/Desktop/KORTFck",
+		"/Users/joakimsk/Desktop/orakeljobb",
+		"/Users/joakimsk/Documents/cosycast",
+		"/Users/joakimsk/Github/flytoget_sliced/flight_chart_detail_weather.html",
+		"/Users/joakimsk/Github/flytoget_sliced/flight_chart.html",
+		"/Users/joakimsk/Github/flytoget_sliced/breaking.html",
+		"/Users/joakimsk/Github/flytoget_sliced/entertainment.html",
+		"/Users/joakimsk/Github/flytoget_sliced/flight.html",
+		"/Users/joakimsk/Github/flytoget/browserconfig.xml",
+		"/Users/joakimsk/Documents/Adobe Photoshop CC 14.2 Final Multilanguage [ChingLiu]/ChingLiu.Install.Notes.nfo"
+	],
+	"find":
+	{
+		"height": 37.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"str ",
+			"str",
+			"metadata",
+			"Experiment",
+			"mazemap",
+			"progress",
+			"Welcome",
+			"welcome"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "axis.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6501,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6399,
+								6399
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3351.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 424,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								424,
+								424
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "axis.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1071,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								436,
+								436
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "CCTV.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"testprint"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 193.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
