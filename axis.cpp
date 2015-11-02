@@ -7,7 +7,7 @@
 #include <vector>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
-
+#include <unistd.h>
 
 #include "axis.h"
 
@@ -19,7 +19,10 @@ static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *use
     ((std::string*)userp)->append((char*)contents, size * nmemb);
     return size * nmemb;
 }
-
+void clear() {
+    // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
+    std::cout << "\x1B[2J\x1B[H";
+}
 bool invalidChar (char c) 
 {  
     return !(c>=0 && c <128);   
@@ -50,6 +53,26 @@ bool String2Int(const std::string& str, int& result)
 }
 
 
+bool String2Float(const std::string& str, float& result)
+{
+    try
+    {
+        std::size_t lastChar;
+        result = std::stof(str, &lastChar);
+        return lastChar == str.size();
+    }
+    catch (std::invalid_argument&)
+    {
+        std::cout << "String2Float-->invalid arg" << std::endl;
+        return false;
+    }
+    catch (std::out_of_range&)
+    {
+        std::cout << "String2Float-->out of range" << std::endl;
+        return false;
+    }
+}
+
 Axis::Axis(void){
 	std::cout << "Default constructor called." << std::endl;
 	ShowInfo();
@@ -66,8 +89,17 @@ Axis::~Axis(void){
 }
 
 void Axis::ShowInfo(){
-	std::cout << "### Axis Information ###";
-    std::cout << "Target CCTV-IP: " << ip_ << std::endl;
+	std::cout << "### Axis Information ###" << std::endl;
+  std::cout << "Target CCTV-IP: " << ip_ << std::endl;
+  std::cout << "position->pan_=" << pan_ << std::endl;
+  std::cout << "position->tilt_=" << tilt_ << std::endl;
+  std::cout << "position->zoom_=" << zoom_ << std::endl;
+  std::cout << "position->iris_=" << iris_ << std::endl;
+  std::cout << "position->focus_=" << focus_ << std::endl;
+  std::cout << "position->autofocus_=" << autofocus_ << std::endl;
+  std::cout << "position->autoiris_=" << autoiris_ << std::endl;
+  std::cout << "camera_=" << camera_ << std::endl;
+  std::cout << "### End of Axis Information ###" << std::endl;
 }
 
 
@@ -87,8 +119,57 @@ void Axis::SetPassword(){
     std::cout << "Password stored in instance." << std::endl;
 }
 
+void Axis::UpdatePosition(std::string& html_response){
+    std::istringstream ss(html_response);
+    std::string token;
+    std::string SplitVec; // #2: Search for tokens
+
+    uint count = 0;
+    uint confirmed = 0;
+    while(std::getline(ss, token, '\n')) {
+      std::cout << "<-" << token << std::endl;
+      boost::algorithm::trim_right(token); // Remove newline and spaces at the end
+      if (token.find('=') != string::npos) {
+            std::string first_element = token.substr(0,token.find('='));
+            std::string second_element = token.substr(token.find('=')+1);
+
+            if(first_element == "pan"){
+              String2Float(second_element, (float&)pan_);
+            } else if (first_element == "tilt"){
+              String2Float(second_element, (float&)tilt_);
+            } else if (first_element == "zoom"){
+              String2Int(second_element, (int&)zoom_);
+            } else if (first_element == "iris"){
+              String2Int(second_element, (int&)iris_);
+            } else if (first_element == "focus"){
+              String2Int(second_element, (int&)focus_);
+            } else if (first_element == "autofocus"){
+              if (second_element == "on"){
+                autofocus_ = true;
+              } else {
+                autofocus_ = false;
+              }
+            } else if (first_element == "autoiris"){
+              if (second_element == "on"){
+                autoiris_ = true;
+              } else {
+                autoiris_ = false;
+              }
+            } else {
+              std::cout << "Unknown position element!" << std::endl;  
+            }
+      } else {
+            std::cout  << "line is not valid key=value pair:" << token << std::endl;
+      }
+      count++;
+    }
+    std::cout << "# Limits read # Count of limits: " << count << " # Count of confirmed: " << confirmed << std::endl;
+}
+
 void Axis::Connect(){
 	    // Create a stream object
+   while(true){
+    clear();
     std::ostringstream str;
     // Create a writer object, passing the stream object.
     curl_writer<ostringstream> writer(&str);
@@ -114,11 +195,14 @@ void Axis::Connect(){
     //std::string query_string = "?camera=" + std::to_string(camera_) + "&pan=45&timestamp=" + std::to_string(ms.count());
     //std::string query_string = "?query=position,limits&camera=" + std::to_string(camera_) + "&html=no&timestamp=" + std::to_string(ms.count());
     
-    std::string query_string = "?query=position,limits&camera=" + std::to_string(camera_);
+    std::string query_string = "?query=position&camera=" + std::to_string(camera_);
 
     //std::string readBuffer; CURLcode
    std::string  res;
  vector<string> tokens;
+ 
+
+
     try {
        form.add(name_form,name_cont);
        form.add(pass_form,pass_cont);
@@ -141,34 +225,8 @@ void Axis::Connect(){
       easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPINTVL,10L));
     
       easy.perform();
-
-    std::istringstream ss(str.str());
-    std::string token;
-    std::string SplitVec; // #2: Search for tokens
-
-    uint count = 0;
-    uint confirmed = 0;
-    while(std::getline(ss, token, '\n')) {
-      //std::cout << "<-" << token << std::endl;
-      boost::algorithm::trim_right(token); // Remove newline and spaces at the end
-      if (token.find('=') != string::npos) {
-            std::string first_element = token.substr(0,token.find('='));
-            std::string second_element = token.substr(token.find('=')+1);
-            
-            int outval = 0;
-            if (String2Int(second_element, outval)){
-              CameraLimits_.insert(std::pair<std::string, int>(first_element,outval));
-              confirmed++;
-            } else {
-              std::cout << "element is not an integer: " << second_element << std::endl;
-            }
-            
-      } else {
-            std::cout  << "line is not valid key=value pair:" << token << std::endl;
-      }
-      count++;
-    }
-    std::cout << "# Limits read # Count of limits: " << count << " # Count of confirmed: " << confirmed << std::endl;
+      res = str.str();
+      Axis::UpdatePosition(res);
 
     } catch (curl_easy_exception error) {
        // If you want to get the entire error stack we can do:
@@ -179,8 +237,7 @@ void Axis::Connect(){
     }
 
 
-   
-
-        //std::cout << str.str() << std::endl;    
-        std::cout << "EEEH" << std::endl; 
+    usleep(10000); // microseconds 1000000 = 1 sec
+    ShowInfo();
+  }
 }
