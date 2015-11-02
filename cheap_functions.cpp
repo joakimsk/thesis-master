@@ -3,7 +3,6 @@
 #include <string>
 #include <termios.h>
 #include <unistd.h>
-#include <unistd.h>
 
 #include "cheap_functions.h"
 
