@@ -3,6 +3,8 @@
 #include <string>
 #include <termios.h>
 #include <unistd.h>
+#include <algorithm>    // std::remove_if
+#include <stdexcept>
 
 #include "cheap_functions.h"
 
@@ -21,7 +23,7 @@ bool invalidChar (char c) {
   return !(c>=0 && c <128);   
 } 
 void stripUnicode(std::string & str) { 
-    str.erase(remove_if(str.begin(),str.end(), invalidChar), str.end());  
+    str.erase(std::remove_if(str.begin(),str.end(), invalidChar), str.end());  
 }
 
 bool String2Int(const std::string& str, int& result) {

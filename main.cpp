@@ -52,10 +52,10 @@ namespace {
         cv::UMat gpuEdges;
         for (;;) {
             capture >> gpuFrame; // get a new frame from camera
-            cv::cvtColor(gpuFrame, gpuBW, cv::COLOR_BGR2GRAY);
-            cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(1,1), 1.5, 1.5);
-            cv::Canny(gpuBlur, gpuEdges, 0, 30, 3);
-            cv::imshow("edges", gpuEdges);
+            //cv::cvtColor(gpuFrame, gpuBW, cv::COLOR_BGR2GRAY);
+            //cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(1,1), 1.5, 1.5);
+            //cv::Canny(gpuBlur, gpuEdges, 0, 30, 3);
+            cv::imshow("gpuFrame", gpuFrame);
 
             char key = (char)cv::waitKey(30); //delay N millis, usually long enough to display and capture input
             switch (key) {
@@ -101,17 +101,29 @@ int main(int ac, char** av) {
     std::cout << "# GPU devices detected = " << ocl_context.ndevices() << endl;
 
     std::string arg = av[1];
-    cv::VideoCapture capture(0); //try to open string, this will attempt to open it as a video file or image sequence
-    if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param
-        capture.open("http://129.241.154.24/mjpg/video.mjpg");
-    std::cout << "Failed isOpened, opening as video camera" << endl;
-    if (!capture.isOpened()) {
-        std::cerr << "Failed to open the video device, video file or image sequence!\n" << endl;
+    //cv::VideoCapture capture(0); //try to open string, this will attempt to open it as a video file or image sequence
+    //if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param
+    cv::VideoCapture ptz_camera_capture;
+    cv::VideoCapture web_camera_capture;
+
+    ptz_camera_capture.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");
+    web_camera_capture.open(0);
+
+    //std::cout << "Failed isOpened, opening as video camera" << endl;
+    if (!ptz_camera_capture.isOpened()) {
+        std::cerr << "Failed to open the ptz_camera_capture!\n" << endl;
+        help(av);
+        return 1;
+    }
+
+    if (!web_camera_capture.isOpened()) {
+        std::cerr << "Failed to open the web_camera_capture!\n" << endl;
         help(av);
         return 1;
     }
     
-    process(capture);
+    process(ptz_camera_capture);
+     process(web_camera_capture);
 
     printf("Main ran");
     

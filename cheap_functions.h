@@ -5,9 +5,11 @@
 #include <string>
 #include <termios.h>
 #include <unistd.h>
+#include <algorithm>    // std::remove_if
 
 static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp);
 bool String2Int(const std::string& str, int& result);
+bool invalidChar (char c);
 bool String2Float(const std::string& str, float& result);
 void clear();
 

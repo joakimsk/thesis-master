@@ -47,7 +47,7 @@ void Axis::ShowInfo(){
 
 void Axis::SetPassword(){
     // Get password
-    std::cout << "Enter root password for AXIS camera:" << std::endl;
+    std::cout << "Enter ptz password for AXIS camera:" << std::endl;
     termios oldt;
     tcgetattr(STDIN_FILENO, &oldt);
     termios newt = oldt;
@@ -146,7 +146,7 @@ bool Axis::QueryCamera_(const std::string query_string, std::string& response_st
       easy.add(curl_pair<CURLoption,long>(CURLOPT_FOLLOWLOCATION,1L));
       easy.add(curl_pair<CURLoption,string>(CURLOPT_USERAGENT,"Mozilla/4.0"));
       easy.add(curl_pair<CURLoption,long>(CURLOPT_HTTPAUTH,CURLAUTH_DIGEST)); // Bitmask for MD5 Digest
-      easy.add(curl_pair<CURLoption,string>(CURLOPT_USERNAME,"root"));
+      easy.add(curl_pair<CURLoption,string>(CURLOPT_USERNAME,"ptz"));
       easy.add(curl_pair<CURLoption,string>(CURLOPT_PASSWORD,pw_));
       if (nobody){
         easy.add(curl_pair<CURLoption,long>(CURLOPT_NOBODY,1L)); // This removed BODY from response, may be ok when sending commands! Not when getting information.
