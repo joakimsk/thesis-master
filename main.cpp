@@ -103,7 +103,7 @@ int main(int ac, char** av) {
     std::string arg = av[1];
     cv::VideoCapture capture(0); //try to open string, this will attempt to open it as a video file or image sequence
     if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param
-        capture.open(0);
+        capture.open("http://129.241.154.24/mjpg/video.mjpg");
     std::cout << "Failed isOpened, opening as video camera" << endl;
     if (!capture.isOpened()) {
         std::cerr << "Failed to open the video device, video file or image sequence!\n" << endl;
@@ -111,13 +111,13 @@ int main(int ac, char** av) {
         return 1;
     }
     
-    //process(capture);
+    process(capture);
 
     printf("Main ran");
     
     Axis cctv("129.241.154.24");
     cctv.SetPassword();
-    cctv.Connect();
+    cctv.RefreshPosition();
     std::cout << "finally" << std::endl;
     return 0;
 }

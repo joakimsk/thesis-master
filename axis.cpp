@@ -10,68 +10,10 @@
 #include <unistd.h>
 
 #include "axis.h"
+#include "cheap_functions.h"
 
 using curl::curl_easy;
 using curl::curl_form;
-
-static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
-{
-    ((std::string*)userp)->append((char*)contents, size * nmemb);
-    return size * nmemb;
-}
-void clear() {
-    // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
-    std::cout << "\x1B[2J\x1B[H";
-}
-bool invalidChar (char c) 
-{  
-    return !(c>=0 && c <128);   
-} 
-void stripUnicode(string & str) 
-{ 
-    str.erase(remove_if(str.begin(),str.end(), invalidChar), str.end());  
-}
-
-bool String2Int(const std::string& str, int& result)
-{
-    try
-    {
-        std::size_t lastChar;
-        result = std::stoi(str, &lastChar, 10);
-        return lastChar == str.size();
-    }
-    catch (std::invalid_argument&)
-    {
-        std::cout << "String2Int-->invalid arg" << std::endl;
-        return false;
-    }
-    catch (std::out_of_range&)
-    {
-        std::cout << "String2Int-->out of range" << std::endl;
-        return false;
-    }
-}
-
-
-bool String2Float(const std::string& str, float& result)
-{
-    try
-    {
-        std::size_t lastChar;
-        result = std::stof(str, &lastChar);
-        return lastChar == str.size();
-    }
-    catch (std::invalid_argument&)
-    {
-        std::cout << "String2Float-->invalid arg" << std::endl;
-        return false;
-    }
-    catch (std::out_of_range&)
-    {
-        std::cout << "String2Float-->out of range" << std::endl;
-        return false;
-    }
-}
 
 Axis::Axis(void){
 	std::cout << "Default constructor called." << std::endl;
@@ -89,7 +31,7 @@ Axis::~Axis(void){
 }
 
 void Axis::ShowInfo(){
-	std::cout << "### Axis Information ###" << std::endl;
+  std::cout << "### Axis Information ###" << std::endl;
   std::cout << "Target CCTV-IP: " << ip_ << std::endl;
   std::cout << "position->pan_=" << pan_ << std::endl;
   std::cout << "position->tilt_=" << tilt_ << std::endl;
@@ -119,13 +61,26 @@ void Axis::SetPassword(){
     std::cout << "Password stored in instance." << std::endl;
 }
 
-void Axis::UpdatePosition(std::string& html_response){
+void Axis::RefreshPosition(){
+  std::string query_string = "?query=position";
+  std::string response_string  = "";
+  Axis::QueryCamera_(query_string, response_string, false);
+  Axis::UpdatePosition_(response_string);
+  Axis::ShowInfo();
+  std::cout << "RefreshPosition() finished." << std::endl;
+}
+
+//////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+//////////////////////////////////////////////
+
+void Axis::UpdatePosition_(std::string& html_response){
     std::istringstream ss(html_response);
     std::string token;
     std::string SplitVec; // #2: Search for tokens
 
     uint count = 0;
-    uint confirmed = 0;
+
     while(std::getline(ss, token, '\n')) {
       std::cout << "<-" << token << std::endl;
       boost::algorithm::trim_right(token); // Remove newline and spaces at the end
@@ -163,81 +118,53 @@ void Axis::UpdatePosition(std::string& html_response){
       }
       count++;
     }
-    std::cout << "# Limits read # Count of limits: " << count << " # Count of confirmed: " << confirmed << std::endl;
+    std::cout << "<- Count of position elements: " << count << std::endl;
 }
 
-void Axis::Connect(){
-	    // Create a stream object
-   while(true){
-    clear();
+bool Axis::QueryCamera_(const std::string query_string, std::string& response_string, bool nobody){
     std::ostringstream str;
-    // Create a writer object, passing the stream object.
     curl_writer<ostringstream> writer(&str);
-    curl_form form;
     curl_easy easy(writer);
+    std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
 
-    curl_pair<CURLformoption,string> name_form(CURLFORM_COPYNAME,"user");
-    curl_pair<CURLformoption,string> name_cont(CURLFORM_COPYCONTENTS,"you username here");
-    curl_pair<CURLformoption,string> pass_form(CURLFORM_COPYNAME,"passw");
-    curl_pair<CURLformoption,string> pass_cont(CURLFORM_COPYCONTENTS,"your password here");
-
-	std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
-	
       // Current ms used for control input to camera using continous motion
       //std::cout << ms.count() << std::endl;
-
 	// Virker ikke om man ikke allerede er logget inn...?
 	//std::string query_string = "?camera=" + std::to_string(camera_) + "&continouspantiltmove=15.0,15.0&timestamp=" + std::to_string(ms.count());
-
 	// Virker ikke om man ikke allerede er logget inn...?
 	//std::string query_string = "?query=position,limits&camera=" + std::to_string(camera_) + "&html=no&timestamp=" + std::to_string(ms.count());
-
     //std::string query_string = "?camera=" + std::to_string(camera_) + "&pan=45&timestamp=" + std::to_string(ms.count());
     //std::string query_string = "?query=position,limits&camera=" + std::to_string(camera_) + "&html=no&timestamp=" + std::to_string(ms.count());
-    
-    std::string query_string = "?query=position&camera=" + std::to_string(camera_);
-
-    //std::string readBuffer; CURLcode
-   std::string  res;
- vector<string> tokens;
- 
-
+    //std::string query_string = "?query=position&camera=" + std::to_string(camera_);
 
     try {
-       form.add(name_form,name_cont);
-       form.add(pass_form,pass_cont);
-
-
-       easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,0L));
+      easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,0L));
       //readBuffer.clear();
       // easy.add(curl_pair<CURLoption,string>(CURLOPT_WRITEFUNCTION, WriteCallback));
-       // easy.add(curl_pair<CURLoption,string>(CURLOPT_WRITEDATA, &readBuffer));
-
-       easy.add(curl_pair<CURLoption,string>(CURLOPT_URL,"http://129.241.154.24/axis-cgi/com/ptz.cgi" + query_string));
-       easy.add(curl_pair<CURLoption,long>(CURLOPT_FOLLOWLOCATION,1L));
-       easy.add(curl_pair<CURLoption,string>(CURLOPT_USERAGENT,"Mozilla/4.0"));
-       easy.add(curl_pair<CURLoption,long>(CURLOPT_HTTPAUTH,CURLAUTH_DIGEST)); // Bitmask for MD5 Digest
-       easy.add(curl_pair<CURLoption,string>(CURLOPT_USERNAME,"root"));
-       easy.add(curl_pair<CURLoption,string>(CURLOPT_PASSWORD,pw_));
-       easy.add(curl_pair<CURLoption,long>(CURLOPT_NOBODY,0L)); // This removed BODY from response, may be ok when sending commands! Not when getting information.
-       easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPALIVE,0L)); // DISABLE KEEPALIVE PROBES
-       easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPIDLE,20L)); 
+      // easy.add(curl_pair<CURLoption,string>(CURLOPT_WRITEDATA, &readBuffer));
+      easy.add(curl_pair<CURLoption,string>(CURLOPT_URL,"http://129.241.154.24/axis-cgi/com/ptz.cgi" + query_string + "&camera=" + std::to_string(camera_) + "&timestamp=" + std::to_string(ms.count())));
+      easy.add(curl_pair<CURLoption,long>(CURLOPT_FOLLOWLOCATION,1L));
+      easy.add(curl_pair<CURLoption,string>(CURLOPT_USERAGENT,"Mozilla/4.0"));
+      easy.add(curl_pair<CURLoption,long>(CURLOPT_HTTPAUTH,CURLAUTH_DIGEST)); // Bitmask for MD5 Digest
+      easy.add(curl_pair<CURLoption,string>(CURLOPT_USERNAME,"root"));
+      easy.add(curl_pair<CURLoption,string>(CURLOPT_PASSWORD,pw_));
+      if (nobody){
+        easy.add(curl_pair<CURLoption,long>(CURLOPT_NOBODY,1L)); // This removed BODY from response, may be ok when sending commands! Not when getting information.
+      } else {
+        easy.add(curl_pair<CURLoption,long>(CURLOPT_NOBODY,0L));
+      }
+      easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPALIVE,0L)); // DISABLE KEEPALIVE PROBES
+      easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPIDLE,20L)); 
       easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPINTVL,10L));
-    
       easy.perform();
-      res = str.str();
-      Axis::UpdatePosition(res);
-
+      response_string = str.str();
+      return true;
     } catch (curl_easy_exception error) {
-       // If you want to get the entire error stack we can do:
-       vector<pair<string,string>> errors = error.get_traceback();
-       // Otherwise we could print the stack like this:
-       error.print_traceback();
-       // Note that printing the stack will erase it
+      // If you want to get the entire error stack we can do:
+      vector<pair<string,string>> errors = error.get_traceback();
+      // Otherwise we could print the stack like this:
+      error.print_traceback();
+      // Note that printing the stack will erase it
     }
-
-
-    usleep(10000); // microseconds 1000000 = 1 sec
-    ShowInfo();
-  }
+    return false;
 }
