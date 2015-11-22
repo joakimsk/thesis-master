@@ -30,8 +30,27 @@
 
 #include "axis.h"
 
+bool thread_cam1_finished = false;
+bool thread_cam2_finished = false;
+bool thread_cv_finished = false;
+
+
 //hide the local functions in an anon namespace
 namespace {
+    void help(char** av) {
+        cout << "The program captures frames from a video file, image sequence (01.jpg, 02.jpg ... 10.jpg) or camera connected to your computer." << endl
+        << "Usage:\n" << av[0] << " <video file, image sequence or device number>" << endl
+        << "q,Q,esc -- quit" << endl
+        << "space   -- save frame" << endl << endl
+        << "\tTo capture from a camera pass the device number. To find the device number, try ls /dev/video*" << endl
+        << "\texample: " << av[0] << " 0" << endl
+        << "\tYou may also pass a video file instead of a device number" << endl
+        << "\texample: " << av[0] << " video.avi" << endl
+        << "\tYou can also pass the path to an image sequence and OpenCV will treat the sequence just like a video." << endl
+        << "\texample: " << av[0] << " right%%02d.jpg" << endl;
+    }
+
+
     void help(char** av) {
         cout << "The program captures frames from a video file, image sequence (01.jpg, 02.jpg ... 10.jpg) or camera connected to your computer." << endl
         << "Usage:\n" << av[0] << " <video file, image sequence or device number>" << endl
@@ -168,15 +187,15 @@ int main(int ac, char** av) {
     }
 
 
-    ptz_camera_capture.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");
+    //ptz_camera_capture.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");
     web_camera_capture.open(0);
 
     //std::cout << "Failed isOpened, opening as video camera" << endl;
-    if (!ptz_camera_capture.isOpened()) {
-        std::cerr << "Failed to open the ptz_camera_capture!\n" << endl;
-        help(av);
-        return 1;
-    }
+    //if (!ptz_camera_capture.isOpened()) {
+        //std::cerr << "Failed to open the ptz_camera_capture!\n" << endl;
+        //help(av);
+        //return 1;
+    //}
 
     if (!web_camera_capture.isOpened()) {
         std::cerr << "Failed to open the web_camera_capture!\n" << endl;
@@ -184,13 +203,13 @@ int main(int ac, char** av) {
         return 1;
     }
     
-    process_two_cameras(ptz_camera_capture, web_camera_capture);
-
+    //process_two_cameras(ptz_camera_capture, web_camera_capture);
+    process(web_camera_capture);
     printf("Main ran");
     
-    Axis cctv("129.241.154.24");
-    cctv.SetPassword();
-    cctv.RefreshPosition();
+    //Axis cctv("129.241.154.24");
+    //cctv.SetPassword();
+    //cctv.RefreshPosition();
     std::cout << "finally" << std::endl;
     return 0;
 }

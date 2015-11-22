@@ -3,32 +3,20 @@
 	{
 		"selected_items":
 		[
+			[
+				"response",
+				"response_string"
+			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "axis.cpp",
+			"file": "/Users/joakimsk/Documents/NordicWorkFolder/nRF51_SDK_10.0.0_dc26b5e/components/toolchain/gcc/Makefile.posix",
 			"settings":
 			{
-				"buffer_size": 6501,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "CMakeLists.txt",
-			"settings":
-			{
-				"buffer_size": 424,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "axis.h",
-			"settings":
-			{
-				"buffer_size": 1071,
-				"line_ending": "Unix"
+				"buffer_size": 110,
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -77,12 +65,18 @@
 	],
 	"file_history":
 	[
+		"/Users/joakimsk/Github/master_code/cheap_functions.cpp",
+		"/Users/joakimsk/Github/master_code/axis.h",
+		"/Users/joakimsk/Github/master_code/axis.cpp",
+		"/Users/joakimsk/Github/master_code/CMakeLists.txt",
+		"/Users/joakimsk/Github/master_code/main.cpp",
+		"/Users/joakimsk/Documents/NordicWorkFolder/nrf51_sdk_v6_0_0_43681/nrf51422/Source/templates/gcc/Makefile.posix",
+		"/Users/joakimsk/opencv/include/opencv2/opencv.hpp",
+		"/Users/joakimsk/Github/master_code/cheap_functions.h",
+		"/Users/joakimsk/Github/the_project/py_gtrack/jsg.py",
 		"/Users/joakimsk/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/Users/joakimsk/Github/master_code/CCTV.sublime-project",
 		"/Users/joakimsk/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
-		"/Users/joakimsk/Github/master_code/axis.h",
-		"/Users/joakimsk/Github/master_code/axis.cpp",
-		"/Users/joakimsk/Github/master_code/main.cpp",
 		"/Users/joakimsk/Github/master_code/maketing.sh",
 		"/Users/joakimsk/Desktop/slett_passordliste_w7.bat",
 		"/Users/joakimsk/Github/master/py_gtrack/ptz.py",
@@ -172,7 +166,7 @@
 	],
 	"find":
 	{
-		"height": 37.0
+		"height": 36.0
 	},
 	"find_in_files":
 	{
@@ -216,49 +210,19 @@
 			[
 				{
 					"buffer": 0,
-					"file": "axis.cpp",
+					"file": "/Users/joakimsk/Documents/NordicWorkFolder/nRF51_SDK_10.0.0_dc26b5e/components/toolchain/gcc/Makefile.posix",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6501,
+						"buffer_size": 110,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6399,
-								6399
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3351.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "CMakeLists.txt",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 424,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								424,
-								424
+								59,
+								59
 							]
 						],
 						"settings":
@@ -269,37 +233,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "axis.h",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1071,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								436,
-								436
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -307,7 +241,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 28.0
 	},
 	"input":
 	{
@@ -344,7 +278,7 @@
 	"project": "CCTV.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 52.0
 	},
 	"save_all_on_build": true,
 	"select_file":
