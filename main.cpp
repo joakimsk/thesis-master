@@ -37,33 +37,6 @@ bool thread_cv_finished = false;
 
 //hide the local functions in an anon namespace
 namespace {
-    void help(char** av) {
-        cout << "The program captures frames from a video file, image sequence (01.jpg, 02.jpg ... 10.jpg) or camera connected to your computer." << endl
-        << "Usage:\n" << av[0] << " <video file, image sequence or device number>" << endl
-        << "q,Q,esc -- quit" << endl
-        << "space   -- save frame" << endl << endl
-        << "\tTo capture from a camera pass the device number. To find the device number, try ls /dev/video*" << endl
-        << "\texample: " << av[0] << " 0" << endl
-        << "\tYou may also pass a video file instead of a device number" << endl
-        << "\texample: " << av[0] << " video.avi" << endl
-        << "\tYou can also pass the path to an image sequence and OpenCV will treat the sequence just like a video." << endl
-        << "\texample: " << av[0] << " right%%02d.jpg" << endl;
-    }
-
-
-    void help(char** av) {
-        cout << "The program captures frames from a video file, image sequence (01.jpg, 02.jpg ... 10.jpg) or camera connected to your computer." << endl
-        << "Usage:\n" << av[0] << " <video file, image sequence or device number>" << endl
-        << "q,Q,esc -- quit" << endl
-        << "space   -- save frame" << endl << endl
-        << "\tTo capture from a camera pass the device number. To find the device number, try ls /dev/video*" << endl
-        << "\texample: " << av[0] << " 0" << endl
-        << "\tYou may also pass a video file instead of a device number" << endl
-        << "\texample: " << av[0] << " video.avi" << endl
-        << "\tYou can also pass the path to an image sequence and OpenCV will treat the sequence just like a video." << endl
-        << "\texample: " << av[0] << " right%%02d.jpg" << endl;
-    }
-
     int process(cv::VideoCapture& capture) {
         int n = 0;
         char filename[200];
@@ -75,10 +48,10 @@ namespace {
         cv::UMat gpuEdges;
         for (;;) {
             capture >> gpuFrame; // get a new frame from camera
-            //cv::cvtColor(gpuFrame, gpuBW, cv::COLOR_BGR2GRAY);
-            //cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(1,1), 1.5, 1.5);
-            //cv::Canny(gpuBlur, gpuEdges, 0, 30, 3);
-            cv::imshow("gpuFrame", gpuFrame);
+            cv::cvtColor(gpuFrame, gpuBW, cv::COLOR_BGR2GRAY);
+            cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(1,1), 1.5, 1.5);
+            cv::Canny(gpuBlur, gpuEdges, 1, 3, 3);
+            cv::imshow("gpuFrame", gpuEdges);
 
             char key = (char)cv::waitKey(30); //delay N millis, usually long enough to display and capture input
             switch (key) {
@@ -148,12 +121,6 @@ void hello(){
 }
 
 int main(int ac, char** av) {
-
-    if (ac != 2) {
-        help(av);
-        return 1;
-    }
-
     std::cout << "# Starting OpenCV, checking capabilities" << endl;
     std::cout << "# haveOpenCL = " << cv::ocl::haveOpenCL() << endl;
     std::cout << "# haveAmdBlas = " << cv::ocl::haveAmdBlas() << endl;
@@ -171,9 +138,16 @@ int main(int ac, char** av) {
 
     std::cout << "# GPU devices detected = " << ocl_context.ndevices() << endl;
 
-    std::string arg = av[1];
-    //cv::VideoCapture capture(0); //try to open string, this will attempt to open it as a video file or image sequence
-    //if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param
+for (int i = 0; i < ocl_context.ndevices(); i++)
+{
+    cv::ocl::Device device = ocl_context.device(i);
+    cout << "name:              " << device.name() << endl;
+    cout << "available:         " << device.available() << endl;
+    cout << "imageSupport:      " << device.imageSupport() << endl;
+    cout << "OpenCL_C_Version:  " << device.OpenCL_C_Version() << endl;
+    cout << endl;
+}
+
     cv::VideoCapture ptz_camera_capture;
     cv::VideoCapture web_camera_capture;
 
@@ -187,8 +161,8 @@ int main(int ac, char** av) {
     }
 
 
-    //ptz_camera_capture.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");
-    web_camera_capture.open(0);
+    ptz_camera_capture.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");
+    //web_camera_capture.open(0);
 
     //std::cout << "Failed isOpened, opening as video camera" << endl;
     //if (!ptz_camera_capture.isOpened()) {
@@ -197,14 +171,13 @@ int main(int ac, char** av) {
         //return 1;
     //}
 
-    if (!web_camera_capture.isOpened()) {
+    if (!ptz_camera_capture.isOpened()) {
         std::cerr << "Failed to open the web_camera_capture!\n" << endl;
-        help(av);
         return 1;
     }
     
     //process_two_cameras(ptz_camera_capture, web_camera_capture);
-    process(web_camera_capture);
+    process(ptz_camera_capture);
     printf("Main ran");
     
     //Axis cctv("129.241.154.24");
