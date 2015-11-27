@@ -9,29 +9,44 @@
 #include <boost/algorithm/string.hpp>
 #include <unistd.h>
 
-#include "axis.h"
+#include "camera.h"
 #include "cheap_functions.h"
 
 using curl::curl_easy;
 using curl::curl_form;
 
-Axis::Axis(void){
-	std::cout << "Default constructor called." << std::endl;
-	ShowInfo();
+Camera::Camera(void){
+	std::cout << "Default Camera constructor called." << std::endl;
 }
 
-Axis::Axis(std::string ip){
-	std::cout << "Overloaded constructor called." << std::endl;
+Axis6045::Axis6045(std::string ip){
+	std::cout << "Axis6045 IP overloaded constructor called." << std::endl;
 	ip_ = ip;
-    ShowInfo();
+   // ShowInfo();
 }
 
-Axis::~Axis(void){
-    std::cout << "Destructing Axis object" << std::endl;
+Axis6045::Axis6045(void){
+  std::cout << "Axis6045 default constructor called." << std::endl;
 }
 
-void Axis::ShowInfo(){
-  std::cout << "### Axis Information ###" << std::endl;
+Webcam::Webcam(void){
+  std::cout << "Webcam default constructor called." << std::endl;
+}
+
+
+Camera::~Camera(void){
+  std::cout << "Destructing Axis object" << std::endl;
+}
+
+void Camera::ShowInfo(){
+  std::cout << "### Camera Information ###" << std::endl;
+  std::cout << "I am a CAMERA" << std::endl;
+  std::cout << "### End of Camera Information ###" << std::endl;
+}
+
+void Axis6045::ShowInfo(){
+  std::cout << "### Camera-> AXIS Information ###" << std::endl;
+
   std::cout << "Target CCTV-IP: " << ip_ << std::endl;
   std::cout << "position->pan_=" << pan_ << std::endl;
   std::cout << "position->tilt_=" << tilt_ << std::endl;
@@ -41,32 +56,56 @@ void Axis::ShowInfo(){
   std::cout << "position->autofocus_=" << autofocus_ << std::endl;
   std::cout << "position->autoiris_=" << autoiris_ << std::endl;
   std::cout << "camera_=" << camera_ << std::endl;
-  std::cout << "### End of Axis Information ###" << std::endl;
+}
+
+void Webcam::ShowInfo(){
+  std::cout << "### Camera-> WEBCAM Information ###" << std::endl;
+
+}
+
+void Camera::GrabPicture(){
+    std::cout << "### Camera->GrabPicture ###" << std::endl;
+}
+void Axis6045::GrabPicture(){
+      std::cout << "### Axis6045->GrabPicture ###" << std::endl;
+
+}
+void Webcam::GrabPicture(){
+      std::cout << "### Webcam->GrabPicture ###" << std::endl;
+      if(!capture_.isOpened()){
+              std::cout << "### Webcam->GrabPicture-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
+         capture_.open(0);  
+      }
+      cpu_t_of_grab_picture_ = clock();
+      capture_ >> image_;
+      cpu_t_of_grab_picture_ = clock() - cpu_t_of_grab_picture_;
+      printf ("It took me %d clicks (%f seconds).\n",(int)cpu_t_of_grab_picture_,((float)cpu_t_of_grab_picture_)/CLOCKS_PER_SEC);
+      printf("Current ticks: %d",(int)clock());
+      std::cout << "### Webcam->GrabPicture DONE ###" << std::endl;
 }
 
 
-void Axis::SetPassword(){
+void Axis6045::SetPassword(){
     // Get password
-    std::cout << "Enter ptz password for AXIS camera:" << std::endl;
-    termios oldt;
-    tcgetattr(STDIN_FILENO, &oldt);
-    termios newt = oldt;
-    newt.c_lflag &= ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    string s_password;
-    getline(std::cin, s_password);
+  std::cout << "Enter ptz password for AXIS camera:" << std::endl;
+  termios oldt;
+  tcgetattr(STDIN_FILENO, &oldt);
+  termios newt = oldt;
+  newt.c_lflag &= ~ECHO;
+  tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+  string s_password;
+  getline(std::cin, s_password);
     //std::cout << s << endl;
-    pw_ = s_password;
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-    std::cout << "Password stored in instance." << std::endl;
+  pw_ = s_password;
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+  std::cout << "Password stored in instance." << std::endl;
 }
 
-void Axis::RefreshPosition(){
+void Axis6045::RefreshPosition(){
   std::string query_string = "?query=position";
   std::string response_string  = "";
-  Axis::QueryCamera_(query_string, response_string, false);
-  Axis::UpdatePosition_(response_string);
-  Axis::ShowInfo();
+  Axis6045::QueryCamera_(query_string, response_string, false);
+  Axis6045::UpdatePosition_(response_string);
   std::cout << "RefreshPosition() finished." << std::endl;
 }
 
@@ -74,9 +113,9 @@ void Axis::RefreshPosition(){
 // PRIVATE FUNCTIONS
 //////////////////////////////////////////////
 
-void Axis::UpdatePosition_(std::string& html_response){
-    std::istringstream ss(html_response);
-    std::string token;
+void Axis6045::UpdatePosition_(std::string& html_response){
+  std::istringstream ss(html_response);
+  std::string token;
     std::string SplitVec; // #2: Search for tokens
 
     uint count = 0;
@@ -85,43 +124,43 @@ void Axis::UpdatePosition_(std::string& html_response){
       std::cout << "<-" << token << std::endl;
       boost::algorithm::trim_right(token); // Remove newline and spaces at the end
       if (token.find('=') != string::npos) {
-            std::string first_element = token.substr(0,token.find('='));
-            std::string second_element = token.substr(token.find('=')+1);
+        std::string first_element = token.substr(0,token.find('='));
+        std::string second_element = token.substr(token.find('=')+1);
 
-            if(first_element == "pan"){
-              String2Float(second_element, (float&)pan_);
-            } else if (first_element == "tilt"){
-              String2Float(second_element, (float&)tilt_);
-            } else if (first_element == "zoom"){
-              String2Int(second_element, (int&)zoom_);
-            } else if (first_element == "iris"){
-              String2Int(second_element, (int&)iris_);
-            } else if (first_element == "focus"){
-              String2Int(second_element, (int&)focus_);
-            } else if (first_element == "autofocus"){
-              if (second_element == "on"){
-                autofocus_ = true;
-              } else {
-                autofocus_ = false;
-              }
-            } else if (first_element == "autoiris"){
-              if (second_element == "on"){
-                autoiris_ = true;
-              } else {
-                autoiris_ = false;
-              }
-            } else {
-              std::cout << "Unknown position element!" << std::endl;  
-            }
+        if(first_element == "pan"){
+          String2Float(second_element, (float&)pan_);
+        } else if (first_element == "tilt"){
+          String2Float(second_element, (float&)tilt_);
+        } else if (first_element == "zoom"){
+          String2Int(second_element, (int&)zoom_);
+        } else if (first_element == "iris"){
+          String2Int(second_element, (int&)iris_);
+        } else if (first_element == "focus"){
+          String2Int(second_element, (int&)focus_);
+        } else if (first_element == "autofocus"){
+          if (second_element == "on"){
+            autofocus_ = true;
+          } else {
+            autofocus_ = false;
+          }
+        } else if (first_element == "autoiris"){
+          if (second_element == "on"){
+            autoiris_ = true;
+          } else {
+            autoiris_ = false;
+          }
+        } else {
+          std::cout << "Unknown position element!" << std::endl;  
+        }
       } else {
-            std::cout  << "line is not valid key=value pair:" << token << std::endl;
+        std::cout  << "line is not valid key=value pair:" << token << std::endl;
       }
       count++;
     }
     std::cout << "<- Count of position elements: " << count << std::endl;
-}
+  }
 
-bool Axis::QueryCamera_(const std::string query_string, std::string& response_string, bool nobody){
+  bool Axis6045::QueryCamera_(const std::string query_string, std::string& response_string, bool nobody){
     std::ostringstream str;
     curl_writer<ostringstream> writer(&str);
     curl_easy easy(writer);
@@ -167,4 +206,4 @@ bool Axis::QueryCamera_(const std::string query_string, std::string& response_st
       // Note that printing the stack will erase it
     }
     return false;
-}
+  }

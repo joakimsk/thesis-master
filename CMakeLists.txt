@@ -9,5 +9,5 @@ include_directories(${CURLCPP_SOURCE_DIR}/include)
 include_directories(${Boost_INCLUDE_DIRS})
 
 
-add_executable( CCTV main.cpp axis.cpp cheap_functions.cpp  )
+add_executable( CCTV main.cpp camera.cpp controller.cpp cheap_functions.cpp  )
 target_link_libraries( CCTV ${OpenCV_LIBS} ${CURL_LIBRARIES} ${Boost_LIBRARIES} curlcpp )
