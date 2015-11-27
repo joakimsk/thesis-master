@@ -129,24 +129,35 @@ int process_two_cameras(cv::VideoCapture& capture1, cv::VideoCapture& capture2) 
 int main(int ac, char** av) {
         clock_t cpu_t_start = clock();
         //inform_opencl();
-
+        std::cout << "CLOCKS_PER_SEC=" << CLOCKS_PER_SEC << std::endl;
 
         cv::ocl::setUseOpenCL(false);
 
-        Axis6045 ptzcam;
-        Webcam cam;
-
+        Axis6045 ptzcam("129.241.154.24");
+        //Webcam cam;
+        
+        ptzcam.SetPassword("ptz");
+        ptzcam.RefreshPosition();
         ptzcam.ShowInfo();
-        cam.ShowInfo();
 
-        ptzcam.GrabPicture();
-        cam.GrabPicture();
+        //cam.ShowInfo();
+        int i = 0;
+        while(i < 1){
+        
+        clock_t cpu_t_temporary_timer = clock();
+        ptzcam.GrabFrame(); // Gather Frame data
+        ptzcam.RetrieveFrame(); // Decode Frame data
+        cpu_t_temporary_timer = clock() - cpu_t_temporary_timer;
+        printf ("\n#### Timer delta took %d clicks (%f seconds).\n",(int)cpu_t_temporary_timer,((float)cpu_t_temporary_timer)/CLOCKS_PER_SEC);
+            i++;
+        }
 
-        cam.GrabPicture();
+        //namedWindow("a", cv::WINDOW_AUTOSIZE);
+        //imshow("a", ptzcam.GetPicture());
 
-        cam.GrabPicture();
-
-        cam.GrabPicture();
+        //cam.CaptureFrame(); 
+        //namedWindow("b", cv::WINDOW_AUTOSIZE);
+        //imshow("b", cam.GetPicture());
 
         //axiscam.SetPassword();
         //axiscam.RefreshPosition();

@@ -23,7 +23,8 @@ void clear();
 class Camera {
 public:
     virtual void ShowInfo();
-    virtual void GrabPicture();
+    virtual void CaptureFrame();
+    cv::Mat GetPicture();
         // Constructors
     Camera();
         //Camera(std::string ip);
@@ -31,6 +32,8 @@ public:
     ~Camera();
 protected:
           clock_t cpu_t_of_grab_picture_;
+          cv::Mat grab_picture_;
+          cv::VideoCapture capture_;
 private:
 
 };
@@ -39,11 +42,14 @@ class Axis6045 final : public Camera{
 public:
     Axis6045();
     Axis6045(std::string ip);
-    void GrabPicture();
+    void CaptureFrame();
     void ShowInfo();
     void Login();
     void SetPassword();
+    void SetPassword(std::string s_password);
     void RefreshPosition();
+    void GrabFrame();
+     void RetrieveFrame();
 private:
     void UpdatePosition_(std::string& html_response);
     bool QueryCamera_(const std::string query_string, std::string& response_string, bool nobody);
@@ -88,11 +94,12 @@ public:
     Webcam();
     Webcam(uint device);
     void ShowInfo();
-    void GrabPicture();  
+    void CaptureFrame();  
+    void GrabFrame();
+    void RetrieveFrame();
 private:
     uint device_ = 0;
-    cv::Mat image_;
-    cv::VideoCapture capture_;
+    
 };
 
 #endif
