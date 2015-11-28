@@ -1,0 +1,5 @@
+# Ignore any files except this file and sh and in
+*
+!/.gitignore
+!*.sh
+!*.in
