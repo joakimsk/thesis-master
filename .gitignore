@@ -8,6 +8,9 @@ CCTV
 *.user
 *.userosscache
 *.sln.docstates
+*.png
+*.log
+.DS_Store
 
 # Ignore CMAKE
 CMakeCache.txt

@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
+
 #include <iomanip>
 #include <string>
+#include <chrono>
+
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -23,6 +27,23 @@
 // Server IP: 129.241.154.97
 
 namespace {
+    void inform_clocks(){
+        std::cout << "system_clock" << std::endl;
+        std::cout << std::chrono::system_clock::period::num << std::endl;
+        std::cout << std::chrono::system_clock::period::den << std::endl;
+        std::cout << "steady = " << std::boolalpha << std::chrono::system_clock::is_steady << std::endl << std::endl;
+        
+        std::cout << "high_resolution_clock" << endl;
+        std::cout << std::chrono::high_resolution_clock::period::num << endl;
+        std::cout << std::chrono::high_resolution_clock::period::den << endl;
+        std::cout << "steady = " << std::boolalpha << std::chrono::high_resolution_clock::is_steady << std::endl << std::endl;
+
+        std::cout << "steady_clock" << std::endl;
+        std::cout << std::chrono::steady_clock::period::num << endl;
+        std::cout << std::chrono::steady_clock::period::den << endl;
+        std::cout << "steady = " << std::boolalpha << std::chrono::steady_clock::is_steady << std::endl << std::endl;
+    }
+
     void inform_opencl(){
         std::cout << "inform_opencl(): Entry" << endl;
         std::cout << "# Checking capabilities" << endl;
@@ -127,30 +148,51 @@ int process_two_cameras(cv::VideoCapture& capture1, cv::VideoCapture& capture2) 
 }
 
 int main(int ac, char** av) {
-        clock_t cpu_t_start = clock();
+    auto chrono_main_start = std::chrono::steady_clock::now();
+
+    inform_clocks();
+
+
         //inform_opencl();
-        std::cout << "CLOCKS_PER_SEC=" << CLOCKS_PER_SEC << std::endl;
+    std::cout << "CLOCKS_PER_SEC=" << CLOCKS_PER_SEC << std::endl;
+    std::cout << "Precision Ticks per second:" << std::chrono::high_resolution_clock::period::den << std::endl;
 
-        cv::ocl::setUseOpenCL(false);
+    cv::ocl::setUseOpenCL(false);
 
-        Axis6045 ptzcam("129.241.154.24");
-        //Webcam cam;
-        
-        ptzcam.SetPassword("ptz");
-        ptzcam.RefreshPosition();
-        ptzcam.ShowInfo();
+    Axis6045 ptzcam("129.241.154.24");
+    Webcam cam;
+
+    ptzcam.SetPassword("ptz");
+    ptzcam.RefreshPosition();
+    ptzcam.ShowInfo();
 
         //cam.ShowInfo();
-        int i = 0;
-        while(i < 1){
-        
-        clock_t cpu_t_temporary_timer = clock();
+
+    std::ofstream a_file ( "debug.log" );
+          a_file << "# X i" << " " << "Y ms" << std::endl;
+
+
+    int i = 0;
+    while(i < 100){
+        auto chrono_cycle_start = std::chrono::steady_clock::now();
+
+        //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
+       // std::cout << ms << std::endl;
+
         ptzcam.GrabFrame(); // Gather Frame data
-        ptzcam.RetrieveFrame(); // Decode Frame data
-        cpu_t_temporary_timer = clock() - cpu_t_temporary_timer;
-        printf ("\n#### Timer delta took %d clicks (%f seconds).\n",(int)cpu_t_temporary_timer,((float)cpu_t_temporary_timer)/CLOCKS_PER_SEC);
-            i++;
-        }
+        //ptzcam.RetrieveFrame(); // Decode Frame data
+        //ptzcam.DisplayPicture("PTZ");
+        cam.GrabFrame(); // Gather Frame data
+        //cam.RetrieveFrame(); // Decode Frame data
+        //cam.DisplayPicture("Webcam");
+        i++;
+        auto chrono_cycle_end = std::chrono::steady_clock::now();
+        auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;
+        std::cout << "Cycle took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << " milliseconds" << endl;
+          a_file << i << " " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << std::endl;
+
+    }
+  a_file.close();
 
         //namedWindow("a", cv::WINDOW_AUTOSIZE);
         //imshow("a", ptzcam.GetPicture());
@@ -186,8 +228,9 @@ int main(int ac, char** av) {
     //printf("Main ran");
     //cctv.SetPassword();
     //cctv.RefreshPosition();
-    clock_t cpu_t_stop = clock();
-    clock_t delta_cpu_t = cpu_t_stop - cpu_t_start;
-      printf ("Execution of main() took %d clicks (%f seconds). Destructing objects and returning.\n",(int)delta_cpu_t,((float)delta_cpu_t)/CLOCKS_PER_SEC);
+
+    auto chrono_main_end = std::chrono::steady_clock::now();
+    auto chrono_main_diff = chrono_main_end - chrono_main_start;
+    std::cout << std::chrono::duration <double, std::milli> (chrono_main_diff).count() << " milliseconds" << endl;
     return 0;
 }

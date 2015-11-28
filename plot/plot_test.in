@@ -1,0 +1,3 @@
+set terminal png
+set output "output.png"
+plot "debug.log" using 1:2 with lines

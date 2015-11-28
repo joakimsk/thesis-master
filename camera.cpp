@@ -44,6 +44,11 @@ void Camera::ShowInfo(){
   std::cout << "### End of Camera Information ###" << std::endl;
 }
 
+void Camera::DisplayPicture(std::string window_name){
+  cv::namedWindow(window_name, cv::WINDOW_AUTOSIZE);
+  imshow(window_name, grab_picture_);
+}
+
 void Axis6045::ShowInfo(){
   std::cout << "### Camera-> AXIS Information ###" << std::endl;
 
@@ -64,75 +69,79 @@ void Webcam::ShowInfo(){
 }
 
 void Camera::CaptureFrame(){
-    std::cout << "### Camera->CaptureFrame NOT IMPLEMENTED ###" << std::endl;
+  std::cout << "### Camera->CaptureFrame NOT IMPLEMENTED ###" << std::endl;
 }
 
 cv::Mat Camera::GetPicture(){
-    std::cout << "### Camera->GetPicture returns picture###" << std::endl;
-    return grab_picture_;
+  std::cout << "### Camera->GetPicture returns picture###" << std::endl;
+  return grab_picture_;
 }
 
 void Webcam::GrabFrame(){
-      std::cout << "### Webcam->GrabFrame ###" << std::endl;
-      if(!capture_.isOpened()){
-        std::cout << "### Webcam->GrabFrame-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
-        capture_.open(0);  
-      }
-      if(!capture_.grab()){
-        std::cout << "Webcam->GrabFrame->  Can not grab images." << std::endl;
-      }else{
-        printf("Webcam Frame Grabbed. Current ticks: %d",(int)clock());
-      }
+  std::cout << "### Webcam->GrabFrame ###" << std::endl;
+  if(!capture_.isOpened()){
+    std::cout << "### Webcam->GrabFrame-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
+    capture_.open(0);  
+  }
+  if(!capture_.grab()){
+    std::cout << "Webcam->GrabFrame->  Can not grab images." << std::endl;
+  }else{
+    std::cout << "Webcam->GrabFrame->GRAB OK" << std::endl;
+  }
 }
 
 void Axis6045::GrabFrame(){
-      std::cout << "### Axis6045->GrabFrame ###" << std::endl;
-      if(!capture_.isOpened()){
-        std::cout << "### Axis6045->GrabFrame-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
-        capture_.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");  
-      }
-      if(!capture_.grab()){
-        std::cout << "Axis6045->GrabFrame->  Can not grab images." << std::endl;
-      }else{
-        printf("Axis6045 Frame Grabbed. Current ticks: %d",(int)clock());
-      }
+  std::cout << "### Axis6045->GrabFrame ###" << std::endl;
+  if(!capture_.isOpened()){
+    std::cout << "### Axis6045->GrabFrame-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
+    capture_.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");  
+  }
+  if(!capture_.grab()){
+    std::cout << "Axis6045->GrabFrame->  Can not grab images." << std::endl;
+  }else{
+    std::cout << "Axis6045->GrabFrame->GRAB OK" << std::endl;
+
+  }
 }
 
 void Axis6045::RetrieveFrame(){
-      std::cout << "### Axis6045->RetrieveFrame ###" << std::endl;
-      if(!capture_.retrieve(grab_picture_)){
-        std::cout << "Axis6045->RetrieveFrame->  Can not retrieve image." << std::endl;
-      }else{
-        printf("Axis6045 Frame Retrieved. Current ticks: %d",(int)clock());
-      }
+  std::cout << "### Axis6045->RetrieveFrame ###" << std::endl;
+  if(!capture_.retrieve(grab_picture_)){
+    std::cout << "Axis6045->RetrieveFrame->  Can not retrieve image." << std::endl;
+  }else{
+    std::cout << "Axis6045->RetrieveFrame->Retrieved OK" << std::endl;
+
+  }
+}
+
+void Webcam::RetrieveFrame(){
+  std::cout << "### Webcam->RetrieveFrame ###" << std::endl;
+  if(!capture_.retrieve(grab_picture_)){
+    std::cout << "Webcam->RetrieveFrame->  Can not retrieve image." << std::endl;
+  }else{
+    std::cout << "Webcam->RetrieveFrame->Retrieved OK" << std::endl;
+
+  }
 }
 
 void Axis6045::CaptureFrame(){
-      std::cout << "### Axis6045->CaptureFrame ###" << std::endl;
-      if(!capture_.isOpened()){
-        std::cout << "### Axis6045->CaptureFrame-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
-        capture_.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");  
-      }
-      cpu_t_of_grab_picture_ = clock();
-      capture_ >> grab_picture_;
-      cpu_t_of_grab_picture_ = clock() - cpu_t_of_grab_picture_;
-      printf ("It took me %d clicks (%f seconds).\n",(int)cpu_t_of_grab_picture_,((float)cpu_t_of_grab_picture_)/CLOCKS_PER_SEC);
-      printf("Current ticks: %d",(int)clock());
-      std::cout << "### Axis6045->CaptureFrame DONE ###" << std::endl;
+  std::cout << "### Axis6045->CaptureFrame ###" << std::endl;
+  if(!capture_.isOpened()){
+    std::cout << "### Axis6045->CaptureFrame-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
+    capture_.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");  
+  }
+  capture_ >> grab_picture_;
+  std::cout << "### Axis6045->CaptureFrame DONE ###" << std::endl;
 }
 
 void Webcam::CaptureFrame(){
-      std::cout << "### Webcam->CaptureFrame ###" << std::endl;
-      if(!capture_.isOpened()){
-              std::cout << "### Webcam->CaptureFrame-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
-         capture_.open(0);  
-      }
-      cpu_t_of_grab_picture_ = clock();
-      capture_ >> grab_picture_;
-      cpu_t_of_grab_picture_ = clock() - cpu_t_of_grab_picture_;
-      printf ("It took me %d clicks (%f seconds).\n",(int)cpu_t_of_grab_picture_,((float)cpu_t_of_grab_picture_)/CLOCKS_PER_SEC);
-      printf("Current ticks: %d",(int)clock());
-      std::cout << "### Webcam->CaptureFrame DONE ###" << std::endl;
+  std::cout << "### Webcam->CaptureFrame ###" << std::endl;
+  if(!capture_.isOpened()){
+    std::cout << "### Webcam->CaptureFrame-> CAPTURE WAS NOT OPEN. OPENING! ###" << std::endl;
+    capture_.open(0);  
+  }
+  capture_ >> grab_picture_;
+  std::cout << "### Webcam->CaptureFrame DONE ###" << std::endl;
 }
 
 

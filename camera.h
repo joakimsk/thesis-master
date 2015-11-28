@@ -5,6 +5,7 @@
 #include "curl_form.h"
 #include <map>
 #include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC */
+#include <chrono>
 
 #include <boost/algorithm/string.hpp>
 
@@ -25,6 +26,7 @@ public:
     virtual void ShowInfo();
     virtual void CaptureFrame();
     cv::Mat GetPicture();
+    void DisplayPicture(std::string window_name);
         // Constructors
     Camera();
         //Camera(std::string ip);
@@ -49,7 +51,7 @@ public:
     void SetPassword(std::string s_password);
     void RefreshPosition();
     void GrabFrame();
-     void RetrieveFrame();
+    void RetrieveFrame();
 private:
     void UpdatePosition_(std::string& html_response);
     bool QueryCamera_(const std::string query_string, std::string& response_string, bool nobody);
