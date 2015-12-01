@@ -23,21 +23,20 @@ void clear();
 
 class Camera {
 public:
+    Camera();
+    ~Camera();
     virtual void ShowInfo();
     virtual void CaptureFrame();
+    virtual void OpenDevice();
+    void GrabFrame();
     cv::Mat GetPicture();
     void DisplayPicture(std::string window_name);
-        // Constructors
-    Camera();
-        //Camera(std::string ip);
-        // Destructor
-    ~Camera();
 protected:
-          clock_t cpu_t_of_grab_picture_;
-          cv::Mat grab_picture_;
-          cv::VideoCapture capture_;
+  clock_t cpu_t_of_grab_picture_;
+  cv::Mat grab_picture_;
+  cv::VideoCapture capture_;
+  cv::Size size_of_capture_;
 private:
-
 };
 
 class Axis6045 final : public Camera{
@@ -50,17 +49,15 @@ public:
     void SetPassword();
     void SetPassword(std::string s_password);
     void RefreshPosition();
-    void GrabFrame();
+    void OpenDevice();
     void RetrieveFrame();
 private:
     void UpdatePosition_(std::string& html_response);
     bool QueryCamera_(const std::string query_string, std::string& response_string, bool nobody);
-
         // general camera
     std::string ip_ = "0.0.0.0";
     std::string pw_ = "";
     std::string usr_="";
-
         // position
     float pan_ = 0.0;
     float tilt_ = 0.0;
@@ -70,7 +67,6 @@ private:
     bool autofocus_ = false;
     bool autoiris_ = false;
     uint camera_ = 1;
-
         // limits
     int min_pan_ = 0;
     int max_pan_ = 0;
@@ -97,11 +93,10 @@ public:
     Webcam(uint device);
     void ShowInfo();
     void CaptureFrame();  
-    void GrabFrame();
+    void OpenDevice();
     void RetrieveFrame();
 private:
     uint device_ = 0;
-    
 };
 
 #endif

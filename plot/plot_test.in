@@ -1,3 +1,6 @@
 set terminal png
 set output "output.png"
-plot "debug.log" using 1:2 with lines
+set yrange [0:100]
+plot "debug.log" using 1:2 with lines title "org", \
+       "debug_ret.log" using 1:2 with lines title "org+ret", \
+       "debug_ret_disp.log" using 1:2 with lines title "org+ret+disp"

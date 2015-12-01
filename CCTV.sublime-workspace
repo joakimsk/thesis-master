@@ -4,8 +4,37 @@
 		"selected_items":
 		[
 			[
+<<<<<<< HEAD
 				"en",
 				"endl"
+=======
+				"size",
+				"size"
+			],
+			[
+				"device",
+				"device"
+			],
+			[
+				"dev",
+				"device_"
+			],
+			[
+				"gra",
+				"grab_picture_"
+			],
+			[
+				"inform_",
+				"inform_clocks"
+			],
+			[
+				"Strin",
+				"string"
+			],
+			[
+				"set",
+				"SetPassword"
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 			],
 			[
 				"iris",
@@ -19,7 +48,51 @@
 			"file": "main.cpp",
 			"settings":
 			{
+<<<<<<< HEAD
 				"buffer_size": 8106,
+=======
+				"buffer_size": 6995,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "plot/plot_test.in",
+			"settings":
+			{
+				"buffer_size": 245,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "plot/.gitignore",
+			"settings":
+			{
+				"buffer_size": 76,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "camera.h",
+			"settings":
+			{
+				"buffer_size": 2623,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "camera.cpp",
+			"settings":
+			{
+				"buffer_size": 10283,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "controller.h",
+			"settings":
+			{
+				"buffer_size": 570,
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 				"line_ending": "Unix"
 			}
 		},
@@ -93,12 +166,32 @@
 	],
 	"file_history":
 	[
+<<<<<<< HEAD
 		"/home/joakimsk/github/master_code/axis.cpp",
 		"/home/joakimsk/github/master_code/axis.h",
 		"/home/joakimsk/github/master_code/CameraStreamer.cpp",
 		"/home/joakimsk/github/master_code/CameraStreamer.h",
 		"/home/joakimsk/github/master_code/CameraStreamer.hpp",
 		"/home/joakimsk/github/master_code/CMakeLists.txt",
+=======
+		"/Users/joakimsk/Github/master_code/run_gnuplot.sh",
+		"/Users/joakimsk/Github/master_code/plot_test.in",
+		"/Users/joakimsk/Github/master_code/camera.h",
+		"/Users/joakimsk/Github/master_code/glyph.cpp",
+		"/Users/joakimsk/Github/master_code/glyph.h",
+		"/Users/joakimsk/Github/master_code/axis.h",
+		"/Users/joakimsk/Github/master_code/axis.cpp",
+		"/Volumes/OSX_DATA/Dropbox/StatSnail/Homepage/legacy/index.html",
+		"/Users/joakimsk/Desktop/ocvbuildlines.txt",
+		"/Users/joakimsk/opencv/CMakeLists.txt",
+		"/Users/joakimsk/Github/master_code/cheap_functions.cpp",
+		"/Users/joakimsk/Github/master_code/CMakeLists.txt",
+		"/Users/joakimsk/Github/master_code/main.cpp",
+		"/Users/joakimsk/Documents/NordicWorkFolder/nrf51_sdk_v6_0_0_43681/nrf51422/Source/templates/gcc/Makefile.posix",
+		"/Users/joakimsk/opencv/include/opencv2/opencv.hpp",
+		"/Users/joakimsk/Github/master_code/cheap_functions.h",
+		"/Users/joakimsk/Github/the_project/py_gtrack/jsg.py",
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 		"/Users/joakimsk/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/Users/joakimsk/Github/master_code/CCTV.sublime-project",
 		"/Users/joakimsk/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
@@ -208,7 +301,24 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+<<<<<<< HEAD
 			"usr_",
+=======
+			"size_of_capture_",
+			"size_of",
+			"size",
+			"webcam",
+			"ip_",
+			"Capture",
+			"root",
+			"axis",
+			"Axis",
+			"./",
+			"\\",
+			"HAVE_CLAMDBLAS",
+			"WITH_AMDFFT",
+			"C_EXAM",
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 			"str ",
 			"str",
 			"metadata",
@@ -239,19 +349,88 @@
 			[
 				{
 					"buffer": 0,
-					"file": "main.cpp",
+<<<<<<< HEAD
+=======
+					"file": "/Users/joakimsk/Documents/NordicWorkFolder/nRF51_SDK_10.0.0_dc26b5e/components/toolchain/gcc/Makefile.posix",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8106,
+						"buffer_size": 110,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
+								59,
+								59
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "CCTV.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1722,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
+					"file": "main.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+<<<<<<< HEAD
+						"buffer_size": 8106,
+=======
+						"buffer_size": 6995,
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+<<<<<<< HEAD
 								5321,
 								5321
+=======
+								386,
+								386
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 							]
 						],
 						"settings":
@@ -261,14 +440,167 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
+<<<<<<< HEAD
 						"translation.y": 2025.0,
+=======
+						"translation.y": 0.0,
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
+<<<<<<< HEAD
 					"buffer": 1,
+=======
+					"buffer": 3,
+					"file": "plot/plot_test.in",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 245,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								16,
+								16
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "plot/.gitignore",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 76,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								49,
+								49
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "camera.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2623,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1040,
+								1069
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 290.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "camera.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10283,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3359,
+								3359
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "controller.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 570,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								174,
+								174
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 					"file": "CMakeLists.txt",
 					"semi_transient": false,
 					"settings":
@@ -292,12 +624,21 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+<<<<<<< HEAD
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
 					"file": "cheap_functions.cpp",
+=======
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "py_gtrack/jsg.py",
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 					"semi_transient": false,
 					"settings":
 					{
@@ -322,12 +663,21 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+<<<<<<< HEAD
 					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
 					"file": "cheap_functions.h",
+=======
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "Makefile",
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 					"semi_transient": false,
 					"settings":
 					{
@@ -350,7 +700,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+<<<<<<< HEAD
 					"stack_index": 3,
+=======
+					"stack_index": 7,
+>>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 					"type": "text"
 				}
 			]
