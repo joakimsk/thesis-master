@@ -179,7 +179,6 @@ int main(int ac, char** av) {
     while(i < 100){
         auto chrono_cycle_start = std::chrono::steady_clock::now();
 
-<<<<<<< HEAD
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
        // std::cout << ms << std::endl;
 
@@ -196,21 +195,6 @@ int main(int ac, char** av) {
         cam.DisplayPicture("Webcam");
         cv::waitKey(1);
 
-=======
-         // Gather Frame data
-        ptzcam.GrabFrame();
-        cam.GrabFrame();
-        
-        // Decode picture
-        ptzcam.RetrieveFrame(); 
-        cam.RetrieveFrame();
-       
-       // Display picture
-        ptzcam.DisplayPicture("PTZ");
-        cam.DisplayPicture("Webcam");
-        cv::waitKey(1);
-       
->>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
         i++;
         auto chrono_cycle_end = std::chrono::steady_clock::now();
         auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;

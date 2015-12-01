@@ -4,12 +4,8 @@
 		"selected_items":
 		[
 			[
-<<<<<<< HEAD
 				"en",
 				"endl"
-=======
-				"size",
-				"size"
 			],
 			[
 				"device",
@@ -34,7 +30,6 @@
 			[
 				"set",
 				"SetPassword"
->>>>>>> bfce606bba22102496c7e24fcab8cb1641407cfb
 			],
 			[
 				"iris",
@@ -48,10 +43,7 @@
 			"file": "main.cpp",
 			"settings":
 			{
-<<<<<<< HEAD
 				"buffer_size": 8106,
-=======
-				"buffer_size": 6995,
 				"line_ending": "Unix"
 			}
 		},
