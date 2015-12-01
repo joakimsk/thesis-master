@@ -176,7 +176,7 @@ int main(int ac, char** av) {
     cv::startWindowThread();
 
     int i = 0;
-    while(i < 100){
+    while(i < 1000){
         auto chrono_cycle_start = std::chrono::steady_clock::now();
 
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
