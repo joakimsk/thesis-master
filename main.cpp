@@ -179,12 +179,19 @@ int main(int ac, char** av) {
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
        // std::cout << ms << std::endl;
 
+        ptzcam.RefreshPosition();
+        ptzcam.ShowInfo();
+
         ptzcam.GrabFrame(); // Gather Frame data
-        //ptzcam.RetrieveFrame(); // Decode Frame data
-        //ptzcam.DisplayPicture("PTZ");
         cam.GrabFrame(); // Gather Frame data
-        //cam.RetrieveFrame(); // Decode Frame data
-        //cam.DisplayPicture("Webcam");
+        
+        ptzcam.RetrieveFrame(); // Decode Frame data
+        cam.RetrieveFrame(); // Decode Frame data
+
+        ptzcam.DisplayPicture("PTZ");
+        cam.DisplayPicture("Webcam");
+        cv::waitKey(1);
+
         i++;
         auto chrono_cycle_end = std::chrono::steady_clock::now();
         auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;
