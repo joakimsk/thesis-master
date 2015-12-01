@@ -17,7 +17,6 @@
 #include "globals.h"
 #include "camera.h"
 #include "controller.h"
-#include "log.h"
 
 // As of 23. October 2015
 // Cam IP: 129.241.154.24
@@ -150,14 +149,48 @@ int process_two_cameras(cv::VideoCapture& capture1, cv::VideoCapture& capture2) 
 }
 
 int main(int ac, char** av) {
+
+
+
+
     auto chrono_main_start = std::chrono::steady_clock::now();
     inform_clocks();
 
     std::cout << "CLOCKS_PER_SEC=" << CLOCKS_PER_SEC << std::endl;
     std::cout << "Precision Ticks per second:" << std::chrono::high_resolution_clock::period::den << std::endl;
 
-    cv::ocl::setUseOpenCL(false);
+    // ALSO requires set OPENCV_OPENCL_RUNTIME=qqq to disable or = to enable
+    cv::ocl::setUseOpenCL(true);
 
+    inform_opencl();
+    
+    cv::UMat gpuCam;
+
+    cv::UMat gpuBW;
+    cv::UMat gpuBlur;
+    cv::UMat gpuEdges;
+
+    cv::VideoCapture cam;
+    cam.open(0);
+
+    cam >> gpuCam;
+
+    auto chrono_cycle_start = std::chrono::steady_clock::now();
+
+    int i = 0;
+    while (i < 1000){
+        i++;
+        cv::cvtColor(gpuCam, gpuBW, cv::COLOR_BGR2GRAY);
+        cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(1,1), 1.5, 1.5);
+        cv::Canny(gpuBlur, gpuEdges, 0, 30, 3);
+    }
+    auto chrono_cycle_end = std::chrono::steady_clock::now();
+    auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;
+    std::cout << "Cycle took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << " milliseconds" << endl;
+
+    cv::imshow("gpuFrame1", gpuEdges);
+    cv::waitKey(1000);
+/*
     Axis6045 ptzcam("129.241.154.24");
     Webcam cam(0);
 
@@ -203,6 +236,7 @@ int main(int ac, char** av) {
 
     }
     a_file.close();
+*/
 
     auto chrono_main_end = std::chrono::steady_clock::now();
     auto chrono_main_diff = chrono_main_end - chrono_main_start;
