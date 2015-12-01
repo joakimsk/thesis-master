@@ -14,8 +14,10 @@
 #include <opencv2/videoio/videoio.hpp>
 #include <opencv2/core/ocl.hpp>
 
+#include "globals.h"
 #include "camera.h"
 #include "controller.h"
+#include "log.h"
 
 // As of 23. October 2015
 // Cam IP: 129.241.154.24
@@ -149,88 +151,59 @@ int process_two_cameras(cv::VideoCapture& capture1, cv::VideoCapture& capture2) 
 
 int main(int ac, char** av) {
     auto chrono_main_start = std::chrono::steady_clock::now();
-
     inform_clocks();
 
-
-        //inform_opencl();
     std::cout << "CLOCKS_PER_SEC=" << CLOCKS_PER_SEC << std::endl;
     std::cout << "Precision Ticks per second:" << std::chrono::high_resolution_clock::period::den << std::endl;
 
     cv::ocl::setUseOpenCL(false);
 
     Axis6045 ptzcam("129.241.154.24");
-    Webcam cam;
+    Webcam cam(0);
 
     ptzcam.SetPassword("ptz");
     ptzcam.RefreshPosition();
     ptzcam.ShowInfo();
 
-        //cam.ShowInfo();
+    cam.ShowInfo();
 
     std::ofstream a_file ( "debug.log" );
           a_file << "# X i" << " " << "Y ms" << std::endl;
 
 
+    ptzcam.OpenDevice();
+    cam.OpenDevice();
+    cv::startWindowThread();
+
     int i = 0;
     while(i < 100){
         auto chrono_cycle_start = std::chrono::steady_clock::now();
 
-        //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
-       // std::cout << ms << std::endl;
-
-        ptzcam.GrabFrame(); // Gather Frame data
-        //ptzcam.RetrieveFrame(); // Decode Frame data
-        //ptzcam.DisplayPicture("PTZ");
-        cam.GrabFrame(); // Gather Frame data
-        //cam.RetrieveFrame(); // Decode Frame data
-        //cam.DisplayPicture("Webcam");
+         // Gather Frame data
+        ptzcam.GrabFrame();
+        cam.GrabFrame();
+        
+        // Decode picture
+        ptzcam.RetrieveFrame(); 
+        cam.RetrieveFrame();
+       
+       // Display picture
+        ptzcam.DisplayPicture("PTZ");
+        cam.DisplayPicture("Webcam");
+        cv::waitKey(1);
+       
         i++;
         auto chrono_cycle_end = std::chrono::steady_clock::now();
         auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;
         std::cout << "Cycle took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << " milliseconds" << endl;
-          a_file << i << " " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << std::endl;
+        a_file << i << " " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << std::endl;
 
     }
-  a_file.close();
-
-        //namedWindow("a", cv::WINDOW_AUTOSIZE);
-        //imshow("a", ptzcam.GetPicture());
-
-        //cam.CaptureFrame(); 
-        //namedWindow("b", cv::WINDOW_AUTOSIZE);
-        //imshow("b", cam.GetPicture());
-
-        //axiscam.SetPassword();
-        //axiscam.RefreshPosition();
-
-    //cv::VideoCapture web_camera_capture;
-    //cv::VideoCapture ptz_camera_capture;
-    
-    //ptz_camera_capture.open("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg");
-    
-    //if (!ptz_camera_capture.isOpened()) {
-     //   std::cerr << "ptz camera not opened!\n" << endl;
-    //}
-
-    //process(ptz_camera_capture);
-    
-    //web_camera_capture.open(0);
-    //std::cout << "Failed isOpened, opening as video camera" << endl;
-    //if (!ptz_camera_capture.isOpened()) {
-    //    std::cerr << "Failed to open the ptz_camera_capture!\n" << endl;
-    //}
-
-
-    
-    //process_two_cameras(ptz_camera_capture, web_camera_capture);
-
-    //printf("Main ran");
-    //cctv.SetPassword();
-    //cctv.RefreshPosition();
+    a_file.close();
 
     auto chrono_main_end = std::chrono::steady_clock::now();
     auto chrono_main_diff = chrono_main_end - chrono_main_start;
     std::cout << std::chrono::duration <double, std::milli> (chrono_main_diff).count() << " milliseconds" << endl;
+
     return 0;
 }
