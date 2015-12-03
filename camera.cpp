@@ -44,16 +44,30 @@ void Camera::GrabFrame(){
   }
 }
 
-void Camera::DisplayPicture(std::string window_name){
-  cv::namedWindow(window_name, cv::WINDOW_AUTOSIZE);
-  cv::imshow(window_name, grab_picture_);
+void Camera::DisplayPicture(){
+  cv::namedWindow(window_name_, cv::WINDOW_AUTOSIZE);
+  cv::imshow(window_name_, grab_picture_);
   std::cout << "Camera->DisplayPicture done" << std::endl;
 }
+
+void Camera::SavePicture(){
+  std::stringstream ss;
+  ss << window_name_ << cpu_t_of_grab_picture_ << ".jpg";
+  std::string filename = ss.str();
+  cv::imwrite(filename, grab_picture_);
+  std::cout << "Camera->SavePicture done" << std::endl;
+}
+
 
 void Camera::ShowInfo(){
   std::cout << "### Camera Information ###" << std::endl;
   std::cout << "I am a CAMERA" << std::endl;
   std::cout << "### End of Camera Information ###" << std::endl;
+}
+
+void Camera::SetWindowName(std::string window_name){
+  window_name_ = window_name;
+  std::cout << "Camera->SetWindowName window_name was set" << std::endl;
 }
 
 Axis6045::Axis6045(std::string ip){

@@ -30,13 +30,16 @@ public:
     virtual void OpenDevice();
     void GrabFrame();
     cv::Mat GetPicture();
-    void DisplayPicture(std::string window_name);
+    void DisplayPicture();
+    void SavePicture();
+    void SetWindowName(std::string window_name);
 protected:
-  clock_t cpu_t_of_grab_picture_;
-  cv::Mat grab_picture_;
-  cv::VideoCapture capture_;
-  cv::Size size_of_capture_;
+    clock_t cpu_t_of_grab_picture_;
+    cv::Mat grab_picture_;
+    cv::VideoCapture capture_;
+    cv::Size size_of_capture_;
 private:
+    std::string window_name_ = "";
 };
 
 class Axis6045 final : public Camera{

@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <string>
 #include <chrono>
-
+#include <thread>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -26,6 +26,42 @@
 // 554/TCP
 // 49155/TCP
 // Server IP: 129.241.154.97
+
+class execution_timer final
+{
+public:
+    execution_timer();
+    ~execution_timer();
+
+    /// @brief Time elapsed since construction or last reset_timer call
+    double elapsed() const;
+    void reset_timer();
+private:
+    typedef std::chrono::high_resolution_clock  high_res_clock;
+    std::chrono::time_point<high_res_clock> start_time_;
+};
+
+execution_timer::execution_timer()
+: start_time_(high_res_clock::now())
+{
+}
+
+execution_timer::~execution_timer()
+{
+}
+
+void execution_timer::reset_timer() {
+    start_time_ = high_res_clock::now();
+}
+
+double execution_timer::elapsed() const {
+    typedef std::chrono::duration<double,std::ratio<1>>   seconds;
+    auto result = std::chrono::duration_cast<seconds>(
+        high_res_clock::now() - start_time_
+    ).count();
+
+    return result;
+}
 
 namespace {
     void inform_clocks(){
@@ -149,9 +185,7 @@ int process_two_cameras(cv::VideoCapture& capture1, cv::VideoCapture& capture2) 
 }
 
 int main(int ac, char** av) {
-
-
-
+    execution_timer timemagic;  
 
     auto chrono_main_start = std::chrono::steady_clock::now();
     inform_clocks();
@@ -163,34 +197,7 @@ int main(int ac, char** av) {
     cv::ocl::setUseOpenCL(true);
 
     inform_opencl();
-    
-    cv::UMat gpuCam;
 
-    cv::UMat gpuBW;
-    cv::UMat gpuBlur;
-    cv::UMat gpuEdges;
-
-    cv::VideoCapture cam;
-    cam.open(0);
-
-    cam >> gpuCam;
-
-    auto chrono_cycle_start = std::chrono::steady_clock::now();
-
-    int i = 0;
-    while (i < 1000){
-        i++;
-        cv::cvtColor(gpuCam, gpuBW, cv::COLOR_BGR2GRAY);
-        cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(1,1), 1.5, 1.5);
-        cv::Canny(gpuBlur, gpuEdges, 0, 30, 3);
-    }
-    auto chrono_cycle_end = std::chrono::steady_clock::now();
-    auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;
-    std::cout << "Cycle took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << " milliseconds" << endl;
-
-    cv::imshow("gpuFrame1", gpuEdges);
-    cv::waitKey(1000);
-/*
     Axis6045 ptzcam("129.241.154.24");
     Webcam cam(0);
 
@@ -206,10 +213,12 @@ int main(int ac, char** av) {
 
     ptzcam.OpenDevice();
     cam.OpenDevice();
+    ptzcam.SetWindowName("PTZ");
+    cam.SetWindowName("Webcam");
     cv::startWindowThread();
 
     int i = 0;
-    while(i < 1000){
+    while(i < 100){
         auto chrono_cycle_start = std::chrono::steady_clock::now();
 
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
@@ -224,8 +233,8 @@ int main(int ac, char** av) {
         ptzcam.RetrieveFrame(); // Decode Frame data
         cam.RetrieveFrame(); // Decode Frame data
 
-        ptzcam.DisplayPicture("PTZ");
-        cam.DisplayPicture("Webcam");
+        //ptzcam.DisplayPicture();
+        //cam.DisplayPicture();       
         cv::waitKey(1);
 
         i++;
@@ -236,11 +245,12 @@ int main(int ac, char** av) {
 
     }
     a_file.close();
-*/
+
+    ptzcam.SavePicture();
+    cam.SavePicture();
 
     auto chrono_main_end = std::chrono::steady_clock::now();
     auto chrono_main_diff = chrono_main_end - chrono_main_start;
     std::cout << std::chrono::duration <double, std::milli> (chrono_main_diff).count() << " milliseconds" << endl;
-
     return 0;
 }

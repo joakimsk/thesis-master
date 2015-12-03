@@ -10,4 +10,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 
 add_executable( CCTV main.cpp camera.cpp controller.cpp cheap_functions.cpp )
+add_executable( TIMER timer_prog.cpp )
 target_link_libraries( CCTV ${OpenCV_LIBS} ${CURL_LIBRARIES} ${Boost_LIBRARIES} curlcpp )
+target_link_libraries( TIMER ${OpenCV_LIBS} )

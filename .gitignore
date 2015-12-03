@@ -3,6 +3,8 @@
 
 # User-specific files
 CCTV
+TIMER
+*.jpg
 *.out
 *.suo
 *.user
