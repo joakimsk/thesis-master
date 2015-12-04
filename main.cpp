@@ -185,6 +185,8 @@ int process_two_cameras(cv::VideoCapture& capture1, cv::VideoCapture& capture2) 
 }
 
 int main(int ac, char** av) {
+
+
     execution_timer timemagic;  
 
     auto chrono_main_start = std::chrono::steady_clock::now();
@@ -211,9 +213,9 @@ int main(int ac, char** av) {
           a_file << "# X i" << " " << "Y ms" << std::endl;
 
 
-    ptzcam.OpenDevice();
+    //ptzcam.OpenDevice();
     cam.OpenDevice();
-    ptzcam.SetWindowName("PTZ");
+    //ptzcam.SetWindowName("PTZ");
     cam.SetWindowName("Webcam");
     cv::startWindowThread();
 
@@ -224,17 +226,21 @@ int main(int ac, char** av) {
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
        // std::cout << ms << std::endl;
 
-        ptzcam.RefreshPosition();
-        ptzcam.ShowInfo();
+        //ptzcam.RefreshPosition();
+        //ptzcam.ShowInfo();
 
-        ptzcam.GrabFrame(); // Gather Frame data
+        //ptzcam.GrabFrame(); // Gather Frame data
         cam.GrabFrame(); // Gather Frame data
         
-        ptzcam.RetrieveFrame(); // Decode Frame data
+        //ptzcam.RetrieveFrame(); // Decode Frame data
         cam.RetrieveFrame(); // Decode Frame data
 
+
+
         //ptzcam.DisplayPicture();
-        //cam.DisplayPicture();       
+        cam.DisplayPicture();       
+        cam.FindGlyph();
+        //cam.DisplayCvDebugPicture();
         cv::waitKey(1);
 
         i++;

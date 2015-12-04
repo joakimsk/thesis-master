@@ -32,6 +32,18 @@
 			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
 		},
 		{
+			"name": "CCTV - TIMER",
+			"cmd": ["/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "TIMER"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "CCTV - TIMER/fast",
+			"cmd": ["/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "TIMER/fast"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
 			"name": "CCTV - CCTV",
 			"cmd": ["/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "CCTV"],
 			"working_dir": "${project_path}",
@@ -40,6 +52,18 @@
 		{
 			"name": "CCTV - CCTV/fast",
 			"cmd": ["/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "CCTV/fast"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "CCTV - CVEXAMPLE",
+			"cmd": ["/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "CVEXAMPLE"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "CCTV - CVEXAMPLE/fast",
+			"cmd": ["/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "CVEXAMPLE/fast"],
 			"working_dir": "${project_path}",
 			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
 		},

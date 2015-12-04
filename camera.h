@@ -29,13 +29,16 @@ public:
     virtual void CaptureFrame();
     virtual void OpenDevice();
     void GrabFrame();
-    cv::Mat GetPicture();
+    cv::UMat GetPicture();
     void DisplayPicture();
     void SavePicture();
     void SetWindowName(std::string window_name);
+    void FindGlyph();
+    void DisplayCvDebugPicture();
 protected:
     clock_t cpu_t_of_grab_picture_;
-    cv::Mat grab_picture_;
+    cv::UMat grab_picture_;
+    cv::UMat grab_cv_debug_picture_;
     cv::VideoCapture capture_;
     cv::Size size_of_capture_;
 private:

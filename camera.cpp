@@ -31,7 +31,7 @@ void Camera::OpenDevice(){
   std::cout << "### Camera->OpenDevice NOT IMPLEMENTED ###" << std::endl;
 }
 
-cv::Mat Camera::GetPicture(){
+cv::UMat Camera::GetPicture(){
   std::cout << "### Camera->GetPicture returns picture###" << std::endl;
   return grab_picture_;
 }
@@ -48,6 +48,12 @@ void Camera::DisplayPicture(){
   cv::namedWindow(window_name_, cv::WINDOW_AUTOSIZE);
   cv::imshow(window_name_, grab_picture_);
   std::cout << "Camera->DisplayPicture done" << std::endl;
+}
+
+void Camera::DisplayCvDebugPicture(){
+  cv::namedWindow("CV Debug", cv::WINDOW_AUTOSIZE);
+  cv::imshow("CV Debug", grab_cv_debug_picture_);
+  std::cout << "Camera->DisplayCvDebugPicture done" << std::endl;
 }
 
 void Camera::SavePicture(){
@@ -68,6 +74,75 @@ void Camera::ShowInfo(){
 void Camera::SetWindowName(std::string window_name){
   window_name_ = window_name;
   std::cout << "Camera->SetWindowName window_name was set" << std::endl;
+}
+
+void Camera::FindGlyph(){
+  std::cout << "Camera->FindGlyph->Started" << std::endl;
+  cv::Mat IN;
+    cv::UMat gpuIN;
+
+  cv::UMat gpuBW;
+  cv::UMat gpuHSV;
+  cv::UMat gpuBlur;
+    cv::UMat gpuEdge;
+
+     // cv::UMat gpuRANGE;
+  //cv::cvtColor(grab_picture_, gpuHSV, cv::COLOR_BGR2HSV);
+//cv::inRange(gpuHSV, cv::Scalar(0,0,0),cv::Scalar(0,255,255), gpuRANGE);
+//imshow("eeh",gpuRANGE);
+//std::cout << gpuRANGE.type() << "DEPTH" << std::endl;
+//cv::bitwise_and(grab_picture_,grab_cv_debug_picture_, gpuRANGE);
+
+    IN = cv::imread("glyph_m1.png", cv::IMREAD_COLOR);
+    //IN.copyTo(gpuIN);
+  cv::cvtColor(grab_picture_, gpuBW, cv::COLOR_BGR2GRAY);
+  cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(3,3), 0, 0);
+  cv::Canny(gpuBlur, gpuEdge, 0, 100, 3, false);
+
+vector<vector<cv::Point> > contours;
+vector<cv::Vec4i> hierarchy;
+
+  cv::findContours(gpuEdge, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+  for (size_t i = 0; i < contours.size(); i++){
+    std::cout << contours[i] << std::endl;
+  }
+
+  cv::imshow("eeha", gpuEdge);
+
+/*
+for( size_t i = 0; i < contours.size(); i++ )
+            {
+                // approximate contour with accuracy proportional
+                // to the contour perimeter
+                approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
+
+                // square contours should have 4 vertices after approximation
+                // relatively large area (to filter out noisy contours)
+                // and be convex.
+                // Note: absolute value of an area is used because
+                // area may be positive or negative - in accordance with the
+                // contour orientation
+                if( approx.size() == 4 &&
+                    fabs(contourArea(Mat(approx))) > 1000 &&
+                    isContourConvex(Mat(approx)) )
+                {
+                    double maxCosine = 0;
+
+                    for( int j = 2; j < 5; j++ )
+                    {
+                        // find the maximum cosine of the angle between joint edges
+                        double cosine = fabs(angle(approx[j%4], approx[j-2], approx[j-1]));
+                        maxCosine = MAX(maxCosine, cosine);
+                    }
+
+                    // if cosines of all angles are small
+                    // (all angles are ~90 degree) then write quandrange
+                    // vertices to resultant sequence
+                    if( maxCosine < 0.3 )
+                        squares.push_back(approx);
+                }
+            }
+*/
 }
 
 Axis6045::Axis6045(std::string ip){
@@ -103,7 +178,7 @@ void Axis6045::OpenDevice(){
       std::cout << "### Axis6045->OpenDevice->Failed opening device" << std::endl;
     }
   } else {
-      std::cout << "### Axis6045->OpenDevice->Device already opened" << std::endl;
+    std::cout << "### Axis6045->OpenDevice->Device already opened" << std::endl;
   }
 }
 
@@ -207,15 +282,15 @@ void Axis6045::UpdatePosition_(std::string& html_response){
       count++;
     }
     std::cout << "<- Count of position elements: " << count << std::endl;
-}
+  }
 
-bool Axis6045::QueryCamera_(const std::string query_string, std::string& response_string, bool nobody){
-  std::ostringstream str;
-  curl_writer<ostringstream> writer(&str);
-  curl_easy easy(writer);
-  std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
-  try {
-    easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,0L));
+  bool Axis6045::QueryCamera_(const std::string query_string, std::string& response_string, bool nobody){
+    std::ostringstream str;
+    curl_writer<ostringstream> writer(&str);
+    curl_easy easy(writer);
+    std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
+    try {
+      easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,0L));
     /*
     readBuffer.clear();
     easy.add(curl_pair<CURLoption,string>(CURLOPT_WRITEFUNCTION, WriteCallback));
@@ -263,7 +338,7 @@ void Webcam::RetrieveFrame(){
     std::cout << "Webcam->RetrieveFrame->  Can not retrieve image." << std::endl;
   }else{
     std::cout << "Webcam->RetrieveFrame->Retrieved OK" << std::endl;
-       if (size_of_capture_.height == 0 && size_of_capture_.width == 0){
+    if (size_of_capture_.height == 0 && size_of_capture_.width == 0){
       size_of_capture_ = grab_picture_.size();
       std::cout << "Webcam->RetrieveFrame-> Size detected, width = " << size_of_capture_.width << " height = " << size_of_capture_.height;
     }
@@ -290,11 +365,11 @@ void Webcam::OpenDevice(){
   if(!capture_.isOpened()){
     std::cout << "### Webcam->OpenDevice->Device not open, opening..." << std::endl;
     if(capture_.open(device_)){
-    std::cout << "### Webcam->OpenDevice->Opened successfully" << std::endl;
+      std::cout << "### Webcam->OpenDevice->Opened successfully" << std::endl;
     } else{
-          std::cout << "### Webcam->OpenDevice->Failed opening device" << std::endl;
+      std::cout << "### Webcam->OpenDevice->Failed opening device" << std::endl;
     }
   } else {
-        std::cout << "### Webcam->OpenDevice->Device already opened" << std::endl;
+    std::cout << "### Webcam->OpenDevice->Device already opened" << std::endl;
   }
 }
