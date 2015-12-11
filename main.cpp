@@ -201,26 +201,26 @@ int main(int ac, char** av) {
     inform_opencl();
 
     Axis6045 ptzcam("129.241.154.24");
-    Webcam cam(0);
+    //Webcam cam(0);
 
     ptzcam.SetPassword("ptz");
     ptzcam.RefreshPosition();
     ptzcam.ShowInfo();
 
-    cam.ShowInfo();
+    //cam.ShowInfo();
 
     std::ofstream a_file ( "debug.log" );
           a_file << "# X i" << " " << "Y ms" << std::endl;
 
 
     //ptzcam.OpenDevice();
-    cam.OpenDevice();
+    //cam.OpenDevice();
     //ptzcam.SetWindowName("PTZ");
-    cam.SetWindowName("Webcam");
-    cv::startWindowThread();
+    //cam.SetWindowName("Webcam");
+    //cv::startWindowThread();
 
     int i = 0;
-    while(i < 100){
+    while(i <  1000){
         auto chrono_cycle_start = std::chrono::steady_clock::now();
 
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
@@ -230,20 +230,21 @@ int main(int ac, char** av) {
         //ptzcam.ShowInfo();
 
         //ptzcam.GrabFrame(); // Gather Frame data
-        cam.GrabFrame(); // Gather Frame data
+        //cam.GrabFrame(); // Gather Frame data
         
         //ptzcam.RetrieveFrame(); // Decode Frame data
-        cam.RetrieveFrame(); // Decode Frame data
-
+        //cam.RetrieveFrame(); // Decode Frame data
+    ptzcam.RefreshPosition();
+    ptzcam.ShowInfo();
 
 
         //ptzcam.DisplayPicture();
-        cam.DisplayPicture();       
-        cam.FindGlyph();
+        //cam.DisplayPicture();       
+        //cam.FindGlyph();
         //cam.DisplayCvDebugPicture();
         cv::waitKey(1);
 
-        i++;
+        //i++;
         auto chrono_cycle_end = std::chrono::steady_clock::now();
         auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;
         std::cout << "Cycle took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << " milliseconds" << endl;
@@ -252,8 +253,8 @@ int main(int ac, char** av) {
     }
     a_file.close();
 
-    ptzcam.SavePicture();
-    cam.SavePicture();
+    //ptzcam.SavePicture();
+   // cam.SavePicture();
 
     auto chrono_main_end = std::chrono::steady_clock::now();
     auto chrono_main_diff = chrono_main_end - chrono_main_start;
