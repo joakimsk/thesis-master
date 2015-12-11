@@ -201,7 +201,7 @@ int main(int ac, char** av) {
     inform_opencl();
 
     Axis6045 ptzcam("129.241.154.24");
-    //Webcam cam(0);
+    Webcam cam(0);
 
     ptzcam.SetPassword("ptz");
     ptzcam.RefreshPosition();
@@ -213,11 +213,11 @@ int main(int ac, char** av) {
           a_file << "# X i" << " " << "Y ms" << std::endl;
 
 
-    //ptzcam.OpenDevice();
+    ptzcam.OpenDevice();
     //cam.OpenDevice();
-    //ptzcam.SetWindowName("PTZ");
+    ptzcam.SetWindowName("PTZ");
     //cam.SetWindowName("Webcam");
-    //cv::startWindowThread();
+    cv::startWindowThread();
 
     int i = 0;
     while(i <  1000){
@@ -226,19 +226,19 @@ int main(int ac, char** av) {
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
        // std::cout << ms << std::endl;
 
-        //ptzcam.RefreshPosition();
-        //ptzcam.ShowInfo();
+        ptzcam.RefreshPosition();
+        ptzcam.ShowInfo();
 
-        //ptzcam.GrabFrame(); // Gather Frame data
-        //cam.GrabFrame(); // Gather Frame data
+        ptzcam.GrabFrame(); // Gather Frame data
+       // cam.GrabFrame(); // Gather Frame data
         
-        //ptzcam.RetrieveFrame(); // Decode Frame data
+        ptzcam.RetrieveFrame(); // Decode Frame data
         //cam.RetrieveFrame(); // Decode Frame data
-    ptzcam.RefreshPosition();
-    ptzcam.ShowInfo();
+        ptzcam.RefreshPosition();
+        ptzcam.ShowInfo();
 
 
-        //ptzcam.DisplayPicture();
+        ptzcam.DisplayPicture();
         //cam.DisplayPicture();       
         //cam.FindGlyph();
         //cam.DisplayCvDebugPicture();

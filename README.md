@@ -7,7 +7,7 @@ Mainly developed on OS X 10.10.5, primary execution platform is Linux (Ubuntu 12
 
 Compiled application names:
 - APP_CCTV: Primary effort for following glyph using multiple camera sources and GPU-acceleration 
-- APP_BLOBTEST: 
+- APP_BLOBTEST: Used to find proof of concept detection of pipes and casings parameters for SimpleBlobDetector
 - APP_TIMER: A visual timer used for showing latency from camera capture
 - APP_CVEXAMPLE: Used to quickly compile example code
 
