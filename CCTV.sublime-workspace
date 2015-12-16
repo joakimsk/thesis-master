@@ -16,58 +16,18 @@
 	"buffers":
 	[
 		{
-			"file": "ocv_example_main.cpp",
-			"settings":
-			{
-				"buffer_size": 4865,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "CMakeLists.txt",
-			"settings":
-			{
-				"buffer_size": 632,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "camera.cpp",
-			"settings":
-			{
-				"buffer_size": 13424,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "/Users/joakimsk/Github/master_latex/bibliography.bib",
 			"settings":
 			{
-				"buffer_size": 3351,
+				"buffer_size": 5928,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "py_gtrack/jsg.py",
+			"file": "ocv_example_main.cpp",
 			"settings":
 			{
-				"buffer_size": 4338,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "main.cpp",
-			"settings":
-			{
-				"buffer_size": 8387,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "camera.h",
-			"settings":
-			{
-				"buffer_size": 2811,
+				"buffer_size": 1706,
 				"line_ending": "Unix"
 			}
 		}
@@ -114,10 +74,28 @@
 	"expanded_folders":
 	[
 		"/Users/joakimsk/Github/master_code",
+		"/Users/joakimsk/Github/master_code/ext",
 		"/Users/joakimsk/Github/master_code/py_gtrack"
 	],
 	"file_history":
 	[
+		"/Users/joakimsk/Github/master_latex/bibliography.bib",
+		"/Users/joakimsk/Github/master_code/camera.cpp",
+		"/Users/joakimsk/Github/master_code/CameraStreamer.cpp",
+		"/Users/joakimsk/Github/master_code/cheap_functions.cpp",
+		"/Users/joakimsk/Github/master_code/controller.cpp",
+		"/Users/joakimsk/Github/master_code/main.cpp",
+		"/Users/joakimsk/Github/master_code/timer_prog.cpp",
+		"/Users/joakimsk/Documents/snippes/hsv_ocv_program.cpp",
+		"/Users/joakimsk/Github/master_code/camera.h",
+		"/Users/joakimsk/Github/master_code/CameraStreamer.h",
+		"/Users/joakimsk/Github/master_code/cheap_functions.h",
+		"/Users/joakimsk/Github/master_code/controller.h",
+		"/Users/joakimsk/Github/master_code/globals.h",
+		"/Users/joakimsk/Github/master_code/README.md",
+		"/Users/joakimsk/Github/master_code/ocv_example_main.cpp",
+		"/Users/joakimsk/Github/master_code/CMakeLists.txt",
+		"/Users/joakimsk/Desktop/data_log.txt",
 		"/home/joakimsk/github/master_code/CMakeLists.txt",
 		"/home/joakimsk/github/master_code/cheap_functions.h",
 		"/home/joakimsk/github/master_code/cheap_functions.cpp",
@@ -131,7 +109,6 @@
 		"/Users/joakimsk/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
 		"/Users/joakimsk/Github/master_code/axis.h",
 		"/Users/joakimsk/Github/master_code/axis.cpp",
-		"/Users/joakimsk/Github/master_code/main.cpp",
 		"/Users/joakimsk/Github/master_code/maketing.sh",
 		"/Users/joakimsk/Desktop/slett_passordliste_w7.bat",
 		"/Users/joakimsk/Github/master/py_gtrack/ptz.py",
@@ -235,6 +212,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"timemagic",
 			"return grab_pict",
 			"usr_",
 			"str ",
@@ -262,132 +240,16 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "ocv_example_main.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4865,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4865,
-								4865
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3398.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "CMakeLists.txt",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 632,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								613,
-								613
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "camera.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 13424,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2746,
-								2746
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1569.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
 					"file": "/Users/joakimsk/Github/master_latex/bibliography.bib",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3351,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								190,
-								190
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/LaTeX/Bibtex.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "py_gtrack/jsg.py",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 4338,
+						"buffer_size": 5928,
 						"regions":
 						{
 						},
@@ -400,31 +262,31 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage",
+							"syntax": "Packages/LaTeX/Bibtex.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1822.0,
+						"translation.y": 674.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "main.cpp",
+					"buffer": 1,
+					"file": "ocv_example_main.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8387,
+						"buffer_size": 1706,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7595,
-								7595
+								398,
+								398
 							]
 						],
 						"settings":
@@ -434,40 +296,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4282.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "camera.h",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2811,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1136,
-								1158
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 620.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
