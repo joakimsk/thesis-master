@@ -2,4 +2,5 @@
 
 # Plot data using gnuplot
 
-gnuplot < plot_test.in
+gnuplot < plot_cppocl.in
+gnuplot < plot_cpp.in

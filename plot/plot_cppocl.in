@@ -1,0 +1,5 @@
+set terminal png
+set output "output_cpp_ocl.png"
+set yrange [0:100]
+plot "ocl_full_cycle.log" using 1:2 with lines title "C++ OCL t cycle", \
+       "ocl_after_grab.log" using 1:2 with lines title "C++ OCL t grab",

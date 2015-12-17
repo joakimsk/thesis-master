@@ -8,7 +8,7 @@ add_subdirectory( ext/curlcpp )
 include_directories(${CURLCPP_SOURCE_DIR}/include)
 include_directories(${Boost_INCLUDE_DIRS})
 
-add_executable( APP_CCTV main.cpp camera.cpp controller.cpp cheap_functions.cpp )
+add_executable( APP_CCTV main.cpp camera.cpp cheap_functions.cpp )
 add_executable( APP_TIMER timer_prog.cpp )
 add_executable( APP_CVEXAMPLE ocv_example_main.cpp )
 add_executable( APP_BLOBTEST blobparamtest.cpp )

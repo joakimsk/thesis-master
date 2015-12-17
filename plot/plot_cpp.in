@@ -1,0 +1,5 @@
+set terminal png
+set output "output.png"
+set yrange [0:100]
+plot "full_cycle.log" using 1:2 with lines title "C++ t cycle", \
+       "after_grab.log" using 1:2 with lines title "C++ t grab",

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-
 #include <iomanip>
 #include <string>
 #include <chrono>
@@ -16,16 +15,23 @@
 
 #include "globals.h"
 #include "camera.h"
-#include "controller.h"
 
-// As of 23. October 2015
-// Cam IP: 129.241.154.24
-// Default ports open:
-// 21/TCP
-// 80/TCP
-// 554/TCP
-// 49155/TCP
-// Server IP: 129.241.154.97
+/*
+Auto CCTV Tracking with GPU-acceleration implementation
+ Written by Joakim Skjefstad (skjefstad.joakim@gmail.com) Autumn 2015
+ Using OpenCV 3.0.0 and C++11
+
+IN ORDER TO USE OPENCL:
+ OPENCV_OPENCL_DEVICE needs to be toggled, also!
+ On Linux: 
+ export OPENCV_OPENCL_DEVICE=":GPU:1"
+ export OPENCV_OPENCL_DEVICE=":GPU:0"
+
+ You also need to toggle this boolean:
+*/
+
+
+
 
 class execution_timer final
 {
@@ -104,88 +110,22 @@ namespace {
         }
         std::cout << "inform_opencl(): Exit" << endl;
     }
-
-    int process(cv::VideoCapture& capture) {
-        int n = 0;
-        char filename[200];
-        std::cout << "press space to save a picture. q or esc to quit" << endl;
-        
-        cv::UMat gpuFrame;
-        cv::UMat gpuBW;
-        cv::UMat gpuBlur;
-        cv::UMat gpuEdges;
-        for (;;) {
-            capture >> gpuFrame; // get a new frame from camera
-            cv::cvtColor(gpuFrame, gpuBW, cv::COLOR_BGR2GRAY);
-            cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(1,1), 1.5, 1.5);
-            cv::Canny(gpuBlur, gpuEdges, 1, 3, 3);
-            cv::imshow("gpuFrame", gpuEdges);
-
-            char key = (char)cv::waitKey(30); //delay N millis, usually long enough to display and capture input
-            switch (key) {
-                case 'q':
-                case 'Q':
-            case 27: //escape key
-            return 0;
-            case ' ': //Save an image
-            sprintf(filename,"filename%.3d.jpg",n++);
-            cv::imwrite(filename,gpuFrame);
-            cout << "Saved " << filename << endl;
-            break;
-            default:
-            break;
-        }
-    }
-    return 0;
 }
-int process_two_cameras(cv::VideoCapture& capture1, cv::VideoCapture& capture2) {
-    std::cout << "q or esc to quit" << endl;
 
-    cv::UMat gpuFrameCam1;
-    cv::UMat gpuFrameCam2;
+int main(int argc, char * const argv[]) {
+    bool OCL = false;
 
-
-
-    cv::UMat gpuBW;
-    cv::UMat gpuBlur;
-    cv::UMat gpuEdges;
-    for (;;) {
-        capture1 >> gpuFrameCam1;
-        capture2 >> gpuFrameCam2;
-
-        std::cout << capture1.get(cv::CAP_PROP_FRAME_WIDTH) << " jidfossdjfoioeasijfseijofedoj " << std::endl;
-
-            //cv::Size sz1 = gpuFrameCam1.Size();
-            //cv::Size sz2 = gpuFrameCam2.Size();
-            //std::cout << sz1 << std::endl;
-            //cv::UMat mosaic();
-
-
-            //cv::cvtColor(gpuFrame, gpuBW, cv::COLOR_BGR2GRAY);
-            //cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(1,1), 1.5, 1.5);
-            //cv::Canny(gpuBlur, gpuEdges, 0, 30, 3);
-        cv::imshow("gpuFrame1", gpuFrameCam1);
-        cv::imshow("gpuFrame2", gpuFrameCam2);
-
-
-
-            char key = (char)cv::waitKey(30); //delay N millis, usually long enough to display and capture input
-            switch (key) {
-                case 'q':
-                case 'Q':
-                case 27: //escape key
-                return 0;
-                break;
-                default:
-                break;
-            }
-        }
+    if ( argc != 2 ){ // argc should be 2 for correct execution
+        // We print argv[0] assuming it is the program name
+        std::cout<<"usage: "<< argv[0] <<" <use_opencl 1 or 0>\n";
+        std::cout<<"example: "<< argv[0] <<" 1\n";
         return 0;
+    } else {
+        int x = std::atoi(argv[1]);
+        if (x == 1){
+            OCL = true;
+        }
     }
-}
-
-int main(int ac, char** av) {
-
 
     execution_timer timemagic;  
 
@@ -196,22 +136,35 @@ int main(int ac, char** av) {
     std::cout << "Precision Ticks per second:" << std::chrono::high_resolution_clock::period::den << std::endl;
 
     // ALSO requires set OPENCV_OPENCL_RUNTIME=qqq to disable or = to enable
-    cv::ocl::setUseOpenCL(true);
+    if (OCL == true){
+        cv::ocl::setUseOpenCL(true);
+    } else {
+        cv::ocl::setUseOpenCL(false);
+    }
 
     inform_opencl();
 
     Axis6045 ptzcam("129.241.154.24");
-    Webcam cam(0);
+    //Webcam cam(0);
 
     ptzcam.SetPassword("ptz");
     ptzcam.RefreshPosition();
     ptzcam.ShowInfo();
 
     //cam.ShowInfo();
+    std::string full_cycle_filename =  "full_cycle.log";
+    std::string after_grab_filename =  "after_grab.log";
 
-    std::ofstream a_file ( "debug.log" );
-          a_file << "# X i" << " " << "Y ms" << std::endl;
+    if (OCL == true){
+        full_cycle_filename = "ocl_full_cycle.log";
+        after_grab_filename =  "ocl_after_grab.log";
+    }
 
+    std::ofstream full_cycle_file (full_cycle_filename);
+    std::ofstream after_grab_file (after_grab_filename);
+
+    full_cycle_file << "# X i" << " " << "Y ms" << std::endl;
+    after_grab_file << "# X i" << " " << "Y ms" << std::endl;
 
     ptzcam.OpenDevice();
     //cam.OpenDevice();
@@ -238,6 +191,7 @@ int main(int ac, char** av) {
         ptzcam.RefreshPosition();
         ptzcam.ShowInfo();
 
+        auto chrono_cycle_after_grab = std::chrono::steady_clock::now();
 
         if (ptzcam.FindGlyph()){ // If we find a glyph
             cv::circle(ptzcam.grab_picture_,cv::Point(ptzcam.glyph_x_,ptzcam.glyph_y_), 4, cv::Scalar(255,0,255), -1, 8, 0 );
@@ -295,18 +249,39 @@ int main(int ac, char** av) {
 
         cyclenr++;
         auto chrono_cycle_end = std::chrono::steady_clock::now();
-        auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;
-        std::cout << "Cycle took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << " milliseconds" << endl;
-        a_file << cyclenr << " " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << std::endl;
+
+        auto chrono_cycle_diff_full_cycle = chrono_cycle_end - chrono_cycle_start;
+        auto chrono_cycle_diff_after_grab = chrono_cycle_after_grab - chrono_cycle_start;
+
+        std::cout << "Full cycle took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff_full_cycle).count() << " milliseconds" << endl;
+        std::cout << "After grab took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff_after_grab).count() << " milliseconds" << endl;
+
+
+        full_cycle_file << cyclenr << " " << std::chrono::duration <double, std::milli> (chrono_cycle_diff_full_cycle).count() << std::endl;
+        after_grab_file << cyclenr << " " << std::chrono::duration <double, std::milli> (chrono_cycle_diff_after_grab).count() << std::endl;
+
+
 
     }
-    a_file.close();
+    full_cycle_file.close();
+    after_grab_file.close();
 
     //ptzcam.SavePicture();
    // cam.SavePicture();
 
     auto chrono_main_end = std::chrono::steady_clock::now();
     auto chrono_main_diff = chrono_main_end - chrono_main_start;
-    std::cout << std::chrono::duration <double, std::milli> (chrono_main_diff).count() << " milliseconds" << endl;
+
+    inform_opencl();
+    std::cout << "Did we use OCL?" << std::endl;
+    if(OCL == true){
+        std::cout << "Yes" << std::endl;    
+    }else {
+
+         std::cout << "No" << std::endl;    
+    }
+
+        std::cout << "Total runtime in ms: " << std::chrono::duration <double, std::milli> (chrono_main_diff).count() << " milliseconds" << endl;
+
     return 0;
 }
