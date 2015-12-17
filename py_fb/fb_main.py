@@ -37,6 +37,8 @@ def find_fingerboard(source):
     cv2.imshow('FingerboardRes',hsv_fingerboard_res)
     print "Number of potential fingerboards = ",nr_potential_fingerboards
 
+
+
 def find_tubulars(input_image):
     input_hsv = cv2.cvtColor(input_image, cv2.COLOR_BGR2HSV)
     input_gray = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
@@ -66,6 +68,15 @@ def find_tubulars(input_image):
                 #potential_glyphs.append(PotentialGlyph(nr, contour, approx_poly, area, moment))
     cv2.imshow('TubularRes',hsv_tubulars_res)
     print "Number of potential tubulars = ",nr_potential_tubulars
+
+#    lines = cv2.HoughLinesP(hsv_tubulars_mask,5,np.pi/180,threshold=10, minLineLength=50, maxLineGap=4)
+ #   if lines is not None:
+  #      linmemat = source
+   #     for x1,y1,x2,y2 in lines[0].tolist():
+    #        cv2.line(linmemat,(x1,y1),(x2,y2),(0,255,0),2)
+    #    cv2.imshow('HoughLines',linmemat)
+    #else:
+    #    print "no lines found in fingerboard!"
 
     params = cv2.SimpleBlobDetector_Params()
 
@@ -142,13 +153,15 @@ if __name__ == "__main__":
     print "File loaded", filename
 
     find_fingerboard(source)
+    find_fingers(source)
     tubular_blobs = find_tubulars(source)
     for keypoint in tubular_blobs:
         cv2.circle(source, (int(round(keypoint.pt[0])),int(round(keypoint.pt[1]))), 20, color=(255,0,255), thickness=2, lineType=1)
 
-    find_fingers(source)
+    
 
     cv2.imshow('Output',source)
+    cv2.imwrite("output.png", source)
     key = cv2.waitKey(0)
     if key == 27:
         exit(0)

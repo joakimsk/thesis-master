@@ -20,7 +20,7 @@ print "Case of master thesis, M.Sc in Technical Cybernetics at NTNU, Norway."
 UPDATE_WINDOW = False
 
 def trackbar_callback(x):
-    filename = "cam4180115_1421589601.jpg"
+    filename = "input.jpg"
     source = cv2.imread(os.path.join('dataset',filename))
     if source is None:
         print "Failed, no image loaded!"
