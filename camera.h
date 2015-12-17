@@ -33,16 +33,22 @@ public:
     void DisplayPicture();
     void SavePicture();
     void SetWindowName(std::string window_name);
-    void FindGlyph();
+    bool FindGlyph();
     void DisplayCvDebugPicture();
+
+cv::UMat grab_picture_;
+
+    bool glyph_found_ = false;
+    int glyph_x_ = 0;
+    int glyph_y_ = 0;
 protected:
     clock_t cpu_t_of_grab_picture_;
-    cv::UMat grab_picture_;
     cv::UMat grab_cv_debug_picture_;
     cv::VideoCapture capture_;
     cv::Size size_of_capture_;
 private:
     std::string window_name_ = "";
+
 };
 
 class Axis6045 final : public Camera{
@@ -57,6 +63,7 @@ public:
     void RefreshPosition();
     void OpenDevice();
     void RetrieveFrame();
+    bool CommandCamera(const std::string query_string);
 private:
     void UpdatePosition_(std::string& html_response);
     bool QueryCamera_(const std::string query_string, std::string& response_string, bool nobody);

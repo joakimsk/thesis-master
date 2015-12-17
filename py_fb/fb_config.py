@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import cv2
-import cv2.cv
 import sys
 import numpy as np
 import requests

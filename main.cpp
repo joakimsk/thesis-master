@@ -219,8 +219,8 @@ int main(int ac, char** av) {
     //cam.SetWindowName("Webcam");
     cv::startWindowThread();
 
-    int i = 0;
-    while(i <  1000){
+    int cyclenr = 0;
+    while(cyclenr <  100){
         auto chrono_cycle_start = std::chrono::steady_clock::now();
 
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
@@ -230,25 +230,74 @@ int main(int ac, char** av) {
         ptzcam.ShowInfo();
 
         ptzcam.GrabFrame(); // Gather Frame data
-       // cam.GrabFrame(); // Gather Frame data
+        //cam.GrabFrame(); // Gather Frame data
         
         ptzcam.RetrieveFrame(); // Decode Frame data
         //cam.RetrieveFrame(); // Decode Frame data
+        
         ptzcam.RefreshPosition();
         ptzcam.ShowInfo();
 
 
+        if (ptzcam.FindGlyph()){ // If we find a glyph
+            cv::circle(ptzcam.grab_picture_,cv::Point(ptzcam.glyph_x_,ptzcam.glyph_y_), 4, cv::Scalar(255,0,255), -1, 8, 0 );
+            std::cout << "We found a glyph!" << std::endl;
+            std::cout << "Calculate delta X and delta Y" << std::endl;
+           int ptz_middle_width = int(ptzcam.grab_picture_.cols/2);
+           int ptz_middle_height = int(ptzcam.grab_picture_.rows/2);
+            std::cout << "middle width and height is " << ptz_middle_width << ptz_middle_height << std::endl;
+
+            cv::circle(ptzcam.grab_picture_,cv::Point(ptz_middle_width,ptz_middle_height), 4, cv::Scalar(255,0,0), -1, 8, 0 );
+            int delta_x = ptzcam.glyph_x_-ptz_middle_width;
+            int delta_y = ptz_middle_height-ptzcam.glyph_y_;
+            float gain_x = 0.03;
+            float gain_y = 0.03;
+            std::cout << "######################### PTZ DELTA: x=" << delta_x << " y=" << delta_y << std::endl;
+            if (abs(delta_x) > 5 || abs(delta_y) > 5 ){
+                ptzcam.CommandCamera("?rpan="+std::to_string(delta_x*gain_x));
+                ptzcam.CommandCamera("?rtilt="+std::to_string(delta_y*gain_y));
+            }
+        }
+
+
+        //if (cam.FindGlyph()){ // If we find a glyph
+            //cv::circle(ptzcam.grab_picture_,cv::Point(ptzcam.glyph_x_,ptzcam.glyph_y_), 4, cv::Scalar(255,0,255), -1, 8, 0 );
+         //   std::cout << "CAM: We found a glyph!" << std::endl;
+            //std::cout << "Calculate delta X and delta Y" << std::endl;
+           //int ptz_middle_width = int(ptzcam.grab_picture_.cols/2);
+           //int ptz_middle_height = int(ptzcam.grab_picture_.rows/2);
+            //std::cout << "middle width and height is " << ptz_middle_width << ptz_middle_height << std::endl;
+
+            //cv::circle(ptzcam.grab_picture_,cv::Point(ptz_middle_width,ptz_middle_height), 4, cv::Scalar(255,0,0), -1, 8, 0 );
+            //int delta_x = ptzcam.glyph_x_-ptz_middle_width;
+            //int delta_y = ptz_middle_height-ptzcam.glyph_y_;
+            //float gain_x = 0.03;
+            //float gain_y = 0.03;
+            //std::cout << "######################### PTZ DELTA: x=" << delta_x << " y=" << delta_y << std::endl;
+            //if (delta_x > 5 || delta_y > 5 ){
+             //   ptzcam.CommandCamera("?rpan="+std::to_string(delta_x*gain_x));
+             //   ptzcam.CommandCamera("?rtilt="+std::to_string(delta_y*gain_y));
+           // }
+        //}
+        
+
+
+
+
         ptzcam.DisplayPicture();
         //cam.DisplayPicture();       
-        //cam.FindGlyph();
+        
+
+
+
         //cam.DisplayCvDebugPicture();
         cv::waitKey(1);
 
-        //i++;
+        cyclenr++;
         auto chrono_cycle_end = std::chrono::steady_clock::now();
         auto chrono_cycle_diff = chrono_cycle_end - chrono_cycle_start;
         std::cout << "Cycle took " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << " milliseconds" << endl;
-        a_file << i << " " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << std::endl;
+        a_file << cyclenr << " " << std::chrono::duration <double, std::milli> (chrono_cycle_diff).count() << std::endl;
 
     }
     a_file.close();

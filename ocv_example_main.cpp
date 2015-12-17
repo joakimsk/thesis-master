@@ -5,46 +5,70 @@ using namespace cv;
 using namespace std;
 int main(int argc, char** argv)
 {
-    Mat src, dst, color_dst, cannymat;
-    if( argc != 2 || !(src=imread(argv[1], 0)).data)
-        return -1;
-    blur(src, dst, Size(3,3));
-    Canny( dst, cannymat, 50, 200, 3 );
-    cvtColor( cannymat, color_dst, COLOR_GRAY2BGR );
-#if 0
-    vector<Vec2f> lines;
-    HoughLines( dst, lines, 1, CV_PI/180, 100 );
-    for( size_t i = 0; i < lines.size(); i++ )
-    {
-        float rho = lines[i][0];
-        float theta = lines[i][1];
-        double a = cos(theta), b = sin(theta);
-        double x0 = a*rho, y0 = b*rho;
-        Point pt1(cvRound(x0 + 1000*(-b)),
-                  cvRound(y0 + 1000*(a)));
-        Point pt2(cvRound(x0 - 1000*(-b)),
-                  cvRound(y0 - 1000*(a)));
-        line( color_dst, pt1, pt2, Scalar(0,0,255), 3, 8 );
-    }
-#else
-    vector<Vec4i> lines;
-    HoughLinesP( cannymat, lines, 1, CV_PI/180, 80, 30, 10 );
-    for( size_t i = 0; i < lines.size(); i++ )
-    {
-        double res = norm(Point(lines[i][0], lines[i][1])- Point(lines[i][2], lines[i][3]));
-        if (res > 150.0){
-            line( color_dst, Point(lines[i][0], lines[i][1]), Point(lines[i][2], lines[i][3]), Scalar(0,0,255), 3, 8 );
-            double res = norm(Point(lines[i][0], lines[i][1])- Point(lines[i][2], lines[i][3]));
-            cout << i << "=" << res << endl;
-        }
-    }
-#endif
-    namedWindow( "Source", 1 );
-    imshow( "Source", src );
-    namedWindow( "Detected Lines", 1 );
-       // imshow( "Canny Lines", cannymat );
+   Mat src=imread("card.jpg");
+ Mat thr;
+ cvtColor(src,thr,CV_BGR2GRAY);
+ threshold( thr, thr, 70, 255,CV_THRESH_BINARY );
 
-    imshow( "Detected Lines", color_dst );
-    waitKey(0);
+ vector< vector <Point> > contours; // Vector for storing contour
+ vector< Vec4i > hierarchy;
+ int largest_contour_index=0;
+ int largest_area=0;
+
+ Mat dst(src.rows,src.cols,CV_8UC1,Scalar::all(0)); //create destination image
+ findContours( thr.clone(), contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE ); // Find the contours in the image
+ for( int i = 0; i< contours.size(); i++ ){
+    double a=contourArea( contours[i],false);  //  Find the area of contour
+    if(a>largest_area){
+    largest_area=a;
+    largest_contour_index=i;                //Store the index of largest contour
+    }
+ }
+
+ drawContours( dst,contours, largest_contour_index, Scalar(255,255,255),CV_FILLED, 8, hierarchy );
+ vector<vector<Point> > contours_poly(1);
+ approxPolyDP( Mat(contours[largest_contour_index]), contours_poly[0],5, true );
+ Rect boundRect=boundingRect(contours[largest_contour_index]);
+ if(contours_poly[0].size()==4){
+    std::vector<Point2f> quad_pts;
+    std::vector<Point2f> squre_pts;
+    quad_pts.push_back(Point2f(contours_poly[0][0].x,contours_poly[0][0].y));
+    quad_pts.push_back(Point2f(contours_poly[0][1].x,contours_poly[0][1].y));
+    quad_pts.push_back(Point2f(contours_poly[0][3].x,contours_poly[0][3].y));
+    quad_pts.push_back(Point2f(contours_poly[0][2].x,contours_poly[0][2].y));
+    squre_pts.push_back(Point2f(boundRect.x,boundRect.y));
+    squre_pts.push_back(Point2f(boundRect.x,boundRect.y+boundRect.height));
+    squre_pts.push_back(Point2f(boundRect.x+boundRect.width,boundRect.y));
+    squre_pts.push_back(Point2f(boundRect.x+boundRect.width,boundRect.y+boundRect.height));
+
+    Mat transmtx = getPerspectiveTransform(quad_pts,squre_pts);
+    Mat transformed = Mat::zeros(src.rows, src.cols, CV_8UC3);
+    warpPerspective(src, transformed, transmtx, src.size());
+    Point P1=contours_poly[0][0];
+    Point P2=contours_poly[0][1];
+    Point P3=contours_poly[0][2];
+    Point P4=contours_poly[0][3];
+
+
+    line(src,P1,P2, Scalar(0,0,255),1,CV_AA,0);
+    line(src,P2,P3, Scalar(0,0,255),1,CV_AA,0);
+    line(src,P3,P4, Scalar(0,0,255),1,CV_AA,0);
+    line(src,P4,P1, Scalar(0,0,255),1,CV_AA,0);
+    rectangle(src,boundRect,Scalar(0,255,0),1,8,0);
+    rectangle(transformed,boundRect,Scalar(0,255,0),1,8,0);
+
+    imshow("quadrilateral", transformed);
+    imshow("thr",thr);
+    imshow("dst",dst);
+    imshow("src",src);
+    imwrite("result1.jpg",dst);
+    imwrite("result2.jpg",src);
+    imwrite("result3.jpg",transformed);
+    waitKey();
+   }
+   else
+   {
+    cout<<"Make sure that your are getting 4 corner using approxPolyDP..."<<endl;
+    }
     return 0;
 }

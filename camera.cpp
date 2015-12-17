@@ -12,6 +12,8 @@
 #include "camera.h"
 #include "cheap_functions.h"
 
+cv::RNG rng(12345);
+
 using curl::curl_easy;
 using curl::curl_form;
 
@@ -76,73 +78,169 @@ void Camera::SetWindowName(std::string window_name){
   std::cout << "Camera->SetWindowName window_name was set" << std::endl;
 }
 
-void Camera::FindGlyph(){
-  std::cout << "Camera->FindGlyph->Started" << std::endl;
-  cv::Mat IN;
-    cv::UMat gpuIN;
+bool Camera::FindGlyph(){
+   cv::Mat src;
+   grab_picture_.copyTo(src);
+ cv::Mat thr;
+  cv::Mat bw;
+  cv::Mat blur;
+//
+ //cv::cvtColor(src,thr,CV_BGR2GRAY);
+ //cv::threshold( thr, thr, 70, 255,CV_THRESH_BINARY );
 
-  cv::UMat gpuBW;
-  cv::UMat gpuHSV;
-  cv::UMat gpuBlur;
-    cv::UMat gpuEdge;
 
-     // cv::UMat gpuRANGE;
-  //cv::cvtColor(grab_picture_, gpuHSV, cv::COLOR_BGR2HSV);
-//cv::inRange(gpuHSV, cv::Scalar(0,0,0),cv::Scalar(0,255,255), gpuRANGE);
-//imshow("eeh",gpuRANGE);
-//std::cout << gpuRANGE.type() << "DEPTH" << std::endl;
-//cv::bitwise_and(grab_picture_,grab_cv_debug_picture_, gpuRANGE);
+  cv::cvtColor(src, bw, cv::COLOR_BGR2GRAY);
+  cv::GaussianBlur(bw, blur, cv::Size(3,3), 0, 0);
+  cv::Canny(blur, thr, 0, 100, 3, false);
 
-    IN = cv::imread("glyph_m1.png", cv::IMREAD_COLOR);
-    //IN.copyTo(gpuIN);
-  cv::cvtColor(grab_picture_, gpuBW, cv::COLOR_BGR2GRAY);
-  cv::GaussianBlur(gpuBW, gpuBlur, cv::Size(3,3), 0, 0);
-  cv::Canny(gpuBlur, gpuEdge, 0, 100, 3, false);
+  std::vector< vector <cv::Point> > contours; // Vector for storing contour
+ std::vector< cv::Vec4i > hierarchy;
+ int largest_contour_index=0;
+ int largest_area=0;
 
-vector<vector<cv::Point> > contours;
-vector<cv::Vec4i> hierarchy;
+ cv::Mat dst(src.rows,src.cols,CV_8UC1,cv::Scalar::all(0)); //create destination image
+ cv::findContours( thr.clone(), contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE ); // Find the contours in the image
+ for( int i = 0; i< contours.size(); i++ ){
+    double a=contourArea( contours[i],false);  //  Find the area of contour
+    if(a>largest_area){
+    largest_area=a;
+    largest_contour_index=i;                //Store the index of largest contour
+    }
+ }
 
-  cv::findContours(gpuEdge, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
-  for (size_t i = 0; i < contours.size(); i++){
-    std::cout << contours[i] << std::endl;
+ cv::drawContours( dst,contours, largest_contour_index,  cv::Scalar(255,255,255),CV_FILLED, 8, hierarchy );
+ std::vector<vector< cv::Point> > contours_poly(1);
+
+  
+ 
+
+ cv::approxPolyDP( cv::Mat(contours[largest_contour_index]), contours_poly[0],5, true );
+
+  cv::Moments mu = cv::moments(contours_poly[0], false);
+
+  cv::Rect boundRect=cv::boundingRect(contours[largest_contour_index]);
+ if(contours_poly[0].size()==4){
+    std::vector< cv::Point2f> quad_pts;
+    std::vector< cv::Point2f> squre_pts;
+    quad_pts.push_back( cv::Point2f(contours_poly[0][0].x,contours_poly[0][0].y));
+    quad_pts.push_back( cv::Point2f(contours_poly[0][1].x,contours_poly[0][1].y));
+    quad_pts.push_back( cv::Point2f(contours_poly[0][3].x,contours_poly[0][3].y));
+    quad_pts.push_back( cv::Point2f(contours_poly[0][2].x,contours_poly[0][2].y));
+    squre_pts.push_back( cv::Point2f(boundRect.x,boundRect.y));
+    squre_pts.push_back( cv::Point2f(boundRect.x,boundRect.y+boundRect.height));
+    squre_pts.push_back( cv::Point2f(boundRect.x+boundRect.width,boundRect.y));
+    squre_pts.push_back( cv::Point2f(boundRect.x+boundRect.width,boundRect.y+boundRect.height));
+
+    cv::Mat transmtx = cv::getPerspectiveTransform(quad_pts,squre_pts);
+    cv::Mat transformed =  cv::Mat::zeros(src.rows, src.cols, CV_8UC3);
+    cv::warpPerspective(src, transformed, transmtx, src.size());
+     cv::Point P1=contours_poly[0][0];
+     cv::Point P2=contours_poly[0][1];
+     cv::Point P3=contours_poly[0][2];
+     cv::Point P4=contours_poly[0][3];
+
+
+     cv::line(src,P1,P2,  cv::Scalar(0,0,255),1,CV_AA,0);
+     cv::line(src,P2,P3,  cv::Scalar(0,0,255),1,CV_AA,0);
+     cv::line(src,P3,P4,  cv::Scalar(0,0,255),1,CV_AA,0);
+     cv::line(src,P4,P1,  cv::Scalar(0,0,255),1,CV_AA,0);
+     cv::rectangle(src,boundRect, cv::Scalar(0,255,0),1,8,0);
+     cv::rectangle(transformed,boundRect, cv::Scalar(0,255,0),1,8,0);
+
+     cv::imshow("quadrilateral", transformed);
+     cv::Mat roisize = cv::Mat::zeros(250,250, CV_8UC3);
+     cv::Mat roiotsu = cv::Mat::zeros(250,250, CV_8UC1);
+
+
+     cv::Mat roi = transformed(boundRect);
+     cv::imshow("ROI",roi);
+     cv::resize(roi, roisize, roisize.size(), 0, 0, cv::INTER_LINEAR);
+      cv::cvtColor(roisize,roiotsu,CV_BGR2GRAY);
+      cv::threshold( roiotsu, roiotsu, 0, 255,CV_THRESH_BINARY+CV_THRESH_OTSU );
+     cv::imshow("ROIsize",roiotsu);
+
+     int roi_width = roiotsu.cols;
+     int roi_height = roiotsu.rows;
+     
+    std::cout << "ROI: w" << roi_width << " h" << roi_height << std::endl;
+
+    int x_roll = int(roi_width/50); 
+    int y_roll = int(roi_height/50);
+
+    std::vector<vector<int>> GlyphMatrix(5,vector<int>(5));
+
+
+    int TargetMatrix[5][5] = {
+      0,0,0,0,0,
+      0,1,1,1,0,
+      0,0,1,0,0,
+      0,0,1,0,0,
+      0,0,0,0,0
+    };
+
+    for (int xr = 0; xr < x_roll; xr++){
+      std::cout << "xroll " << xr << std::endl;
+      for (int yr = 0; yr < y_roll; yr++){
+        std::cout << "yroll " << yr << std::endl;
+        cv::Mat roiotsu_subsection = cv::Mat::zeros(50,50, CV_8UC1);
+        roiotsu_subsection = roiotsu(cv::Rect(xr*50,yr*50,50,50));
+        cv::imshow("subb",roiotsu_subsection);
+
+        if(cv::countNonZero(roiotsu_subsection) < (2500/2)){
+          std::cout << "is EMPTY" << std::endl;
+          GlyphMatrix[xr][yr] = 0;
+        } else {
+          std::cout << "is FULL" << std::endl;
+          GlyphMatrix[xr][yr] = 1;
+        }            
+        std::cout << "non-zero=" << cv::countNonZero(roiotsu_subsection) << std::endl;
+      }
+    }
+    bool isequal = true;
+    std::cout << "Detected 5x5 matrix:" << std::endl;
+    for (int i = 0; i < 5; i++){
+      for (int y = 0; y < 5; y++){
+        std::cout << GlyphMatrix[y][i]; // row, col
+        std::cout <<"vs"<< TargetMatrix[i][y] << " ";
+        if(GlyphMatrix[y][i] != TargetMatrix[i][y]){
+          std::cout << "NOT EQUAL, BREAKING LOOP" << std::endl;
+          isequal = false;
+          break;
+        }
+      }
+      std::cout << std::endl;
+    }
+
+    if(isequal == true){
+      std::cout << "Glyph recognized!" << std::endl;
+      int cx = int(mu.m10/mu.m00);
+      int cy = int(mu.m01/mu.m00);
+      std::cout << "cx="<<cx << "cy=" << cy << std::endl;
+
+    std::string window_name_ = "";
+      glyph_found_ = true;
+      glyph_x_ = cx;
+      glyph_y_ = cy;
+
+      return true;
+          } else {
+      std::cout << "Glyph NOT recognized!" << std::endl;
+
+     // cv::waitKey(1000);
+    }
+
+     //cv::imshow("thr",thr);
+     //cv::imshow("dst",dst);
+     //cv::imshow("src",src);
+    //imwrite("result1.jpg",dst);
+    //imwrite("result2.jpg",src);
+    //imwrite("result3.jpg",transformed);
+     //cv::waitKey();
+   }
+   else{
+    cout<<"4 points needed"<<endl;
   }
-
-  cv::imshow("eeha", gpuEdge);
-
-/*
-for( size_t i = 0; i < contours.size(); i++ )
-            {
-                // approximate contour with accuracy proportional
-                // to the contour perimeter
-                approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
-
-                // square contours should have 4 vertices after approximation
-                // relatively large area (to filter out noisy contours)
-                // and be convex.
-                // Note: absolute value of an area is used because
-                // area may be positive or negative - in accordance with the
-                // contour orientation
-                if( approx.size() == 4 &&
-                    fabs(contourArea(Mat(approx))) > 1000 &&
-                    isContourConvex(Mat(approx)) )
-                {
-                    double maxCosine = 0;
-
-                    for( int j = 2; j < 5; j++ )
-                    {
-                        // find the maximum cosine of the angle between joint edges
-                        double cosine = fabs(angle(approx[j%4], approx[j-2], approx[j-1]));
-                        maxCosine = MAX(maxCosine, cosine);
-                    }
-
-                    // if cosines of all angles are small
-                    // (all angles are ~90 degree) then write quandrange
-                    // vertices to resultant sequence
-                    if( maxCosine < 0.3 )
-                        squares.push_back(approx);
-                }
-            }
-*/
+  return false;
 }
 
 Axis6045::Axis6045(std::string ip){
@@ -312,6 +410,42 @@ void Axis6045::UpdatePosition_(std::string& html_response){
     easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPINTVL,10L));
     easy.perform();
     response_string = str.str();
+    return true;
+  } catch (curl_easy_exception error) {
+    // If you want to get the entire error stack we can do:
+    vector<pair<string,string>> errors = error.get_traceback();
+    // Otherwise we could print the stack like this:
+    error.print_traceback();
+    // Note that printing the stack will erase it
+  }
+  return false;
+}
+
+  bool Axis6045::CommandCamera(const std::string query_string){
+    std::ostringstream str;
+    curl_writer<ostringstream> writer(&str);
+    curl_easy easy(writer);
+    std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
+    try {
+      easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,0L));
+    /*
+    readBuffer.clear();
+    easy.add(curl_pair<CURLoption,string>(CURLOPT_WRITEFUNCTION, WriteCallback));
+    easy.add(curl_pair<CURLoption,string>(CURLOPT_WRITEDATA, &readBuffer));
+    */
+    easy.add(curl_pair<CURLoption,string>(CURLOPT_URL,"http://129.241.154.24/axis-cgi/com/ptz.cgi" + query_string + "&camera=" + std::to_string(camera_) + "&timestamp=" + std::to_string(ms.count())));
+    easy.add(curl_pair<CURLoption,long>(CURLOPT_FOLLOWLOCATION,1L));
+    easy.add(curl_pair<CURLoption,string>(CURLOPT_USERAGENT,"Mozilla/4.0"));
+    easy.add(curl_pair<CURLoption,long>(CURLOPT_HTTPAUTH,CURLAUTH_DIGEST)); 
+    easy.add(curl_pair<CURLoption,string>(CURLOPT_USERNAME,"ptz"));
+    easy.add(curl_pair<CURLoption,string>(CURLOPT_PASSWORD,"ptz"));
+
+      easy.add(curl_pair<CURLoption,long>(CURLOPT_NOBODY,1L)); // This removed BODY from response, may be ok when sending commands! Not when getting information.
+
+    easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPALIVE,0L)); // DISABLE KEEPALIVE PROBES
+    easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPIDLE,20L)); 
+    easy.add(curl_pair<CURLoption,long>(CURLOPT_TCP_KEEPINTVL,10L));
+    easy.perform();
     return true;
   } catch (curl_easy_exception error) {
     // If you want to get the entire error stack we can do:

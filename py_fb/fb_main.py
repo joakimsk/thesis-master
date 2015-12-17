@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import cv2
-#ssimport cv2.cv
 import sys
 import numpy as np
 import random
@@ -8,9 +7,9 @@ import os
 import math
 
 CV_LOAD_IMAGE_COLOR = 1
-# Fingerboard POC
+# Fingerboard POC implementation
 # Written by Joakim Skjefstad (skjefstad.joakim@gmail.com) Autumn 2015
-# Using OpenCV 2.4.12 for Python on OS X
+# Using OpenCV 3.0.0 and Python 2.7+
 
 def find_fingerboard(source):
     input_hsv = cv2.cvtColor(source, cv2.COLOR_BGR2HSV)
@@ -23,7 +22,7 @@ def find_fingerboard(source):
     minimum_fingerboard_area = 1000
     maximum_fingerboard_area = 20000
     hsv_fingerboard_res = cv2.bitwise_and(source,source, mask= hsv_fingerboard_mask)
-    fingerboard_contours, fingerboard_hierarchy = cv2.findContours(hsv_fingerboard_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    im2, fingerboard_contours, fingerboard_hierarchy = cv2.findContours(hsv_fingerboard_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     nr_potential_fingerboards = 0
     for contour in fingerboard_contours:
         area = cv2.contourArea(contour)
@@ -55,7 +54,7 @@ def find_tubulars(input_image):
     maximum_tubulars_area = 20000
     hsv_tubulars_res = cv2.bitwise_and(input_image,input_image, mask= hsv_tubulars_mask)
 
-    tubulars_contours, tubulars_hierarchy = cv2.findContours(hsv_tubulars_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    im2, tubulars_contours, tubulars_hierarchy = cv2.findContours(hsv_tubulars_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     nr_potential_tubulars = 0
     for contour in tubulars_contours:
         area = cv2.contourArea(contour)
@@ -126,7 +125,7 @@ def find_fingers(input_image):
     minimum_fingers_area = 50
     maximum_fingers_area = 200
     hsv_fingers_res = cv2.bitwise_and(input_image,input_image, mask= hsv_fingers_mask)
-    fingers_contours, fingers_hierarchy = cv2.findContours(hsv_fingers_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    im2, fingers_contours, fingers_hierarchy = cv2.findContours(hsv_fingers_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     nr_potential_fingers = 0
     for contour in fingers_contours:
         area = cv2.contourArea(contour)
