@@ -86,6 +86,7 @@ def grab_frame(capture_device, is_cctv):
 capture_device = init_capture_device(True) # SET TO TRUE FOR CCTV STREAM
 command_this_frame = 0
 f = open('full_cycle_py.log','w')
+fgrab = open('grab_cycle_py.log','w')
 for cycle in range(1, 100):
     millis = int(round(time.time() * 1000))
     #source = grab_frame(capture_device, True) # SET TO TRUE FOR CCTV STREAM
@@ -100,7 +101,9 @@ for cycle in range(1, 100):
     #source = resized
     
     #cv2.putText(source,'+', (w_resized/2-(baseline[0][0]/2),h_resized/2+(baseline[0][1]/2)), cv2.FONT_HERSHEY_PLAIN, 2, (0,0,255), 2)
-    
+    millis_grab = int(round(time.time() * 1000))
+    deltamillis_grab = millis_grab - millis
+
     temp_img = jsg.preprocess(source)
     cv2.imshow('temp',temp_img)
     potential_glyphs = jsg.find_potential_glyphs(temp_img, 100.0)
@@ -161,6 +164,7 @@ for cycle in range(1, 100):
     elif key == 97:
         print "Left"
         ptz.relative_pan(P_GAIN_PAN*1000)
+    
     millis_end = int(round(time.time() * 1000))
     print "cycleno",cycle
 
@@ -172,4 +176,13 @@ for cycle in range(1, 100):
     f.write(str(deltamillis)) # python will convert \n to os.linesep
     f.write("\n") # python will convert \n to os.linesep
 
+    fgrab.write(str(cycle)) # python will convert \n to os.linesep
+    fgrab.write(" ") # python will convert \n to os.linesep
+    fgrab.write(str(deltamillis_grab)) # python will convert \n to os.linesep
+    fgrab.write("\n") # python will convert \n to os.linesep
+
+
+
+
 f.close() # you can omit in most cases as the destructor will call it
+fgrab.close() 

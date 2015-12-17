@@ -1,0 +1,12 @@
+set terminal png
+set output "output_py.png"
+set yrange [0:10000]
+set title "Python"
+set xlabel "x cycles"
+set ylabel "y milliseconds"
+
+stats 'full_cycle_py.log' index 0 using 2 prefix "A"
+
+plot "full_cycle_py.log" using 1:2 with lines title "Python t cycle", \
+       "grab_cycle_py.log" using 1:2 with lines title "Python t grab", \
+       A_mean title " Mean cycle t"
