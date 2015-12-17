@@ -1,5 +1,17 @@
+
+if (!strstrt(GPVAL_COMPILE_OPTIONS,"+STATS")) {
+    print "No support for stats command"
+}
 set terminal png
 set output "output_cpp_ocl.png"
 set yrange [0:100]
+set title "C++ with OCL"
+set xlabel "x cycles"
+set ylabel "y milliseconds"
+
+
+stats 'ocl_full_cycle.log' index 0 using 2 prefix "A"
+
 plot "ocl_full_cycle.log" using 1:2 with lines title "C++ OCL t cycle", \
-       "ocl_after_grab.log" using 1:2 with lines title "C++ OCL t grab",
+       "ocl_after_grab.log" using 1:2 with lines title "C++ OCL t grab", \
+       A_mean title " Mean cycle t"

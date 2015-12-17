@@ -79,127 +79,134 @@ void Camera::SetWindowName(std::string window_name){
 }
 
 bool Camera::FindGlyph(){
-   cv::Mat src;
-   grab_picture_.copyTo(src);
- cv::Mat thr;
+  if(grab_picture_.empty()){
+    std::cout << "GRAB_PICTURE WAS EMPTY!" << std::endl;
+    return false;
+  }
+
+  cv::Mat processed;
+  grab_picture_.copyTo(processed);
+
+  cv::Mat thr;
   cv::Mat bw;
   cv::Mat blur;
-//
- //cv::cvtColor(src,thr,CV_BGR2GRAY);
- //cv::threshold( thr, thr, 70, 255,CV_THRESH_BINARY );
 
-
-  cv::cvtColor(src, bw, cv::COLOR_BGR2GRAY);
+  std::cout << "Changing color "<< std::endl;
+  cv::cvtColor(processed, bw, cv::COLOR_BGR2GRAY);
   cv::GaussianBlur(bw, blur, cv::Size(3,3), 0, 0);
   cv::Canny(blur, thr, 0, 100, 3, false);
+  std::cout << "Canny done "<< std::endl;
 
   std::vector< vector <cv::Point> > contours; // Vector for storing contour
- std::vector< cv::Vec4i > hierarchy;
- int largest_contour_index=0;
- int largest_area=0;
+  std::vector< cv::Vec4i > hierarchy;
+  int largest_contour_index=0;
+  int largest_area=0;
 
- cv::Mat dst(src.rows,src.cols,CV_8UC1,cv::Scalar::all(0)); //create destination image
+ cv::Mat dst(processed.rows,processed.cols,CV_8UC1,cv::Scalar::all(0)); //create destination image
  cv::findContours( thr.clone(), contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE ); // Find the contours in the image
  for( int i = 0; i< contours.size(); i++ ){
     double a=contourArea( contours[i],false);  //  Find the area of contour
     if(a>largest_area){
-    largest_area=a;
+      largest_area=a;
     largest_contour_index=i;                //Store the index of largest contour
+  }
+}
+
+std::cout << "Drawing contours "<< std::endl;
+
+
+cv::drawContours( dst,contours, largest_contour_index,  cv::Scalar(255,255,255),CV_FILLED, 8, hierarchy );
+std::vector<vector< cv::Point> > contours_poly(1);
+
+
+
+
+cv::approxPolyDP( cv::Mat(contours[largest_contour_index]), contours_poly[0],5, true );
+
+cv::Moments mu = cv::moments(contours_poly[0], false);
+
+cv::Rect boundRect=cv::boundingRect(contours[largest_contour_index]);
+if(contours_poly[0].size()==4){
+  std::vector< cv::Point2f> quad_pts;
+  std::vector< cv::Point2f> squre_pts;
+  quad_pts.push_back( cv::Point2f(contours_poly[0][0].x,contours_poly[0][0].y));
+  quad_pts.push_back( cv::Point2f(contours_poly[0][1].x,contours_poly[0][1].y));
+  quad_pts.push_back( cv::Point2f(contours_poly[0][3].x,contours_poly[0][3].y));
+  quad_pts.push_back( cv::Point2f(contours_poly[0][2].x,contours_poly[0][2].y));
+  squre_pts.push_back( cv::Point2f(boundRect.x,boundRect.y));
+  squre_pts.push_back( cv::Point2f(boundRect.x,boundRect.y+boundRect.height));
+  squre_pts.push_back( cv::Point2f(boundRect.x+boundRect.width,boundRect.y));
+  squre_pts.push_back( cv::Point2f(boundRect.x+boundRect.width,boundRect.y+boundRect.height));
+
+  cv::Mat transmtx = cv::getPerspectiveTransform(quad_pts,squre_pts);
+  cv::Mat transformed =  cv::Mat::zeros(processed.rows, processed.cols, CV_8UC3);
+  cv::warpPerspective(processed, transformed, transmtx, processed.size());
+  cv::Point P1=contours_poly[0][0];
+  cv::Point P2=contours_poly[0][1];
+  cv::Point P3=contours_poly[0][2];
+  cv::Point P4=contours_poly[0][3];
+
+
+  cv::line(processed,P1,P2,  cv::Scalar(0,0,255),1,CV_AA,0);
+  cv::line(processed,P2,P3,  cv::Scalar(0,0,255),1,CV_AA,0);
+  cv::line(processed,P3,P4,  cv::Scalar(0,0,255),1,CV_AA,0);
+  cv::line(processed,P4,P1,  cv::Scalar(0,0,255),1,CV_AA,0);
+  cv::rectangle(processed,boundRect, cv::Scalar(0,255,0),1,8,0);
+  cv::rectangle(transformed,boundRect, cv::Scalar(0,255,0),1,8,0);
+
+  cv::imshow("quadrilateral", transformed);
+  cv::Mat roisize = cv::Mat::zeros(250,250, CV_8UC3);
+  cv::Mat roiotsu = cv::Mat::zeros(250,250, CV_8UC1);
+
+
+  cv::Mat roi = transformed(boundRect);
+  cv::imshow("ROI",roi);
+  cv::resize(roi, roisize, roisize.size(), 0, 0, cv::INTER_LINEAR);
+  cv::cvtColor(roisize,roiotsu,CV_BGR2GRAY);
+  cv::threshold( roiotsu, roiotsu, 0, 255,CV_THRESH_BINARY+CV_THRESH_OTSU );
+  cv::imshow("ROIsize",roiotsu);
+
+  int roi_width = roiotsu.cols;
+  int roi_height = roiotsu.rows;
+
+  std::cout << "ROI: w" << roi_width << " h" << roi_height << std::endl;
+
+  int x_roll = int(roi_width/50); 
+  int y_roll = int(roi_height/50);
+
+  std::vector<vector<int>> GlyphMatrix(5,vector<int>(5));
+
+
+  int TargetMatrix[5][5] = {
+    0,0,0,0,0,
+    0,1,1,1,0,
+    0,0,1,0,0,
+    0,0,1,0,0,
+    0,0,0,0,0
+  };
+
+  for (int xr = 0; xr < x_roll; xr++){
+    std::cout << "xroll " << xr << std::endl;
+    for (int yr = 0; yr < y_roll; yr++){
+      std::cout << "yroll " << yr << std::endl;
+      cv::Mat roiotsu_subsection = cv::Mat::zeros(50,50, CV_8UC1);
+      roiotsu_subsection = roiotsu(cv::Rect(xr*50,yr*50,50,50));
+      cv::imshow("subb",roiotsu_subsection);
+
+      if(cv::countNonZero(roiotsu_subsection) < (2500/2)){
+        std::cout << "is EMPTY" << std::endl;
+        GlyphMatrix[xr][yr] = 0;
+      } else {
+        std::cout << "is FULL" << std::endl;
+        GlyphMatrix[xr][yr] = 1;
+      }            
+      std::cout << "non-zero=" << cv::countNonZero(roiotsu_subsection) << std::endl;
     }
- }
-
- cv::drawContours( dst,contours, largest_contour_index,  cv::Scalar(255,255,255),CV_FILLED, 8, hierarchy );
- std::vector<vector< cv::Point> > contours_poly(1);
-
-  
- 
-
- cv::approxPolyDP( cv::Mat(contours[largest_contour_index]), contours_poly[0],5, true );
-
-  cv::Moments mu = cv::moments(contours_poly[0], false);
-
-  cv::Rect boundRect=cv::boundingRect(contours[largest_contour_index]);
- if(contours_poly[0].size()==4){
-    std::vector< cv::Point2f> quad_pts;
-    std::vector< cv::Point2f> squre_pts;
-    quad_pts.push_back( cv::Point2f(contours_poly[0][0].x,contours_poly[0][0].y));
-    quad_pts.push_back( cv::Point2f(contours_poly[0][1].x,contours_poly[0][1].y));
-    quad_pts.push_back( cv::Point2f(contours_poly[0][3].x,contours_poly[0][3].y));
-    quad_pts.push_back( cv::Point2f(contours_poly[0][2].x,contours_poly[0][2].y));
-    squre_pts.push_back( cv::Point2f(boundRect.x,boundRect.y));
-    squre_pts.push_back( cv::Point2f(boundRect.x,boundRect.y+boundRect.height));
-    squre_pts.push_back( cv::Point2f(boundRect.x+boundRect.width,boundRect.y));
-    squre_pts.push_back( cv::Point2f(boundRect.x+boundRect.width,boundRect.y+boundRect.height));
-
-    cv::Mat transmtx = cv::getPerspectiveTransform(quad_pts,squre_pts);
-    cv::Mat transformed =  cv::Mat::zeros(src.rows, src.cols, CV_8UC3);
-    cv::warpPerspective(src, transformed, transmtx, src.size());
-     cv::Point P1=contours_poly[0][0];
-     cv::Point P2=contours_poly[0][1];
-     cv::Point P3=contours_poly[0][2];
-     cv::Point P4=contours_poly[0][3];
-
-
-     cv::line(src,P1,P2,  cv::Scalar(0,0,255),1,CV_AA,0);
-     cv::line(src,P2,P3,  cv::Scalar(0,0,255),1,CV_AA,0);
-     cv::line(src,P3,P4,  cv::Scalar(0,0,255),1,CV_AA,0);
-     cv::line(src,P4,P1,  cv::Scalar(0,0,255),1,CV_AA,0);
-     cv::rectangle(src,boundRect, cv::Scalar(0,255,0),1,8,0);
-     cv::rectangle(transformed,boundRect, cv::Scalar(0,255,0),1,8,0);
-
-     cv::imshow("quadrilateral", transformed);
-     cv::Mat roisize = cv::Mat::zeros(250,250, CV_8UC3);
-     cv::Mat roiotsu = cv::Mat::zeros(250,250, CV_8UC1);
-
-
-     cv::Mat roi = transformed(boundRect);
-     cv::imshow("ROI",roi);
-     cv::resize(roi, roisize, roisize.size(), 0, 0, cv::INTER_LINEAR);
-      cv::cvtColor(roisize,roiotsu,CV_BGR2GRAY);
-      cv::threshold( roiotsu, roiotsu, 0, 255,CV_THRESH_BINARY+CV_THRESH_OTSU );
-     cv::imshow("ROIsize",roiotsu);
-
-     int roi_width = roiotsu.cols;
-     int roi_height = roiotsu.rows;
-     
-    std::cout << "ROI: w" << roi_width << " h" << roi_height << std::endl;
-
-    int x_roll = int(roi_width/50); 
-    int y_roll = int(roi_height/50);
-
-    std::vector<vector<int>> GlyphMatrix(5,vector<int>(5));
-
-
-    int TargetMatrix[5][5] = {
-      0,0,0,0,0,
-      0,1,1,1,0,
-      0,0,1,0,0,
-      0,0,1,0,0,
-      0,0,0,0,0
-    };
-
-    for (int xr = 0; xr < x_roll; xr++){
-      std::cout << "xroll " << xr << std::endl;
-      for (int yr = 0; yr < y_roll; yr++){
-        std::cout << "yroll " << yr << std::endl;
-        cv::Mat roiotsu_subsection = cv::Mat::zeros(50,50, CV_8UC1);
-        roiotsu_subsection = roiotsu(cv::Rect(xr*50,yr*50,50,50));
-        cv::imshow("subb",roiotsu_subsection);
-
-        if(cv::countNonZero(roiotsu_subsection) < (2500/2)){
-          std::cout << "is EMPTY" << std::endl;
-          GlyphMatrix[xr][yr] = 0;
-        } else {
-          std::cout << "is FULL" << std::endl;
-          GlyphMatrix[xr][yr] = 1;
-        }            
-        std::cout << "non-zero=" << cv::countNonZero(roiotsu_subsection) << std::endl;
-      }
-    }
-    bool isequal = true;
-    std::cout << "Detected 5x5 matrix:" << std::endl;
-    for (int i = 0; i < 5; i++){
-      for (int y = 0; y < 5; y++){
+  }
+  bool isequal = true;
+  std::cout << "Detected 5x5 matrix:" << std::endl;
+  for (int i = 0; i < 5; i++){
+    for (int y = 0; y < 5; y++){
         std::cout << GlyphMatrix[y][i]; // row, col
         std::cout <<"vs"<< TargetMatrix[i][y] << " ";
         if(GlyphMatrix[y][i] != TargetMatrix[i][y]){
@@ -217,13 +224,13 @@ bool Camera::FindGlyph(){
       int cy = int(mu.m01/mu.m00);
       std::cout << "cx="<<cx << "cy=" << cy << std::endl;
 
-    std::string window_name_ = "";
+      std::string window_name_ = "";
       glyph_found_ = true;
       glyph_x_ = cx;
       glyph_y_ = cy;
 
       return true;
-          } else {
+    } else {
       std::cout << "Glyph NOT recognized!" << std::endl;
 
      // cv::waitKey(1000);
@@ -236,8 +243,8 @@ bool Camera::FindGlyph(){
     //imwrite("result2.jpg",src);
     //imwrite("result3.jpg",transformed);
      //cv::waitKey();
-   }
-   else{
+  }
+  else{
     cout<<"4 points needed"<<endl;
   }
   return false;
@@ -421,13 +428,13 @@ void Axis6045::UpdatePosition_(std::string& html_response){
   return false;
 }
 
-  bool Axis6045::CommandCamera(const std::string query_string){
-    std::ostringstream str;
-    curl_writer<ostringstream> writer(&str);
-    curl_easy easy(writer);
-    std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
-    try {
-      easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,0L));
+bool Axis6045::CommandCamera(const std::string query_string){
+  std::ostringstream str;
+  curl_writer<ostringstream> writer(&str);
+  curl_easy easy(writer);
+  std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
+  try {
+    easy.add(curl_pair<CURLoption,long>(CURLOPT_VERBOSE,0L));
     /*
     readBuffer.clear();
     easy.add(curl_pair<CURLoption,string>(CURLOPT_WRITEFUNCTION, WriteCallback));

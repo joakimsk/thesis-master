@@ -23,9 +23,13 @@ Auto CCTV Tracking with GPU-acceleration implementation
 
 IN ORDER TO USE OPENCL:
  OPENCV_OPENCL_DEVICE needs to be toggled, also!
- On Linux: 
- export OPENCV_OPENCL_DEVICE=":GPU:1"
- export OPENCV_OPENCL_DEVICE=":GPU:0"
+ On Linux:
+
+    ENABLE
+export OPENCV_OPENCL_DEVICE=":GPU:0"
+
+    DISABLE
+export OPENCV_OPENCL_DEVICE="qqq"
 
  You also need to toggle this boolean:
 */
@@ -94,7 +98,7 @@ namespace {
         std::cout << "# haveAmdBlas = " << cv::ocl::haveAmdBlas() << endl;
         std::cout << "# haveAmdFft = " << cv::ocl::haveAmdFft() << endl;
         std::cout << "# haveSVM = " << cv::ocl::haveSVM() << endl;
-        cv::ocl::setUseOpenCL(false);
+        
         cv::ocl::Context ocl_context;
         if (!ocl_context.create(cv::ocl::Device::TYPE_GPU)){
             std::cerr << "Failed creating the OCL context." << endl;
@@ -109,6 +113,8 @@ namespace {
             cout << endl;
         }
         std::cout << "inform_opencl(): Exit" << endl;
+
+        cv::ocl::Device(ocl_context.device(0));
     }
 }
 
@@ -143,6 +149,8 @@ int main(int argc, char * const argv[]) {
     }
 
     inform_opencl();
+
+            cv::waitKey(4000);
 
     Axis6045 ptzcam("129.241.154.24");
     //Webcam cam(0);
@@ -272,7 +280,6 @@ int main(int argc, char * const argv[]) {
     auto chrono_main_end = std::chrono::steady_clock::now();
     auto chrono_main_diff = chrono_main_end - chrono_main_start;
 
-    inform_opencl();
     std::cout << "Did we use OCL?" << std::endl;
     if(OCL == true){
         std::cout << "Yes" << std::endl;    

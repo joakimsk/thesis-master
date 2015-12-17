@@ -1,0 +1,6 @@
+set terminal png
+set output "output.png"
+set yrange [0:100]
+plot "full_cycle_file.log" using 1:2 with lines title "t cycle", \
+       "after_grab_file.log" using 1:2 with lines title "t grab", \
+       "debug_ret_disp.log" using 1:2 with lines title "t vision"

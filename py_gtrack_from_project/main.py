@@ -4,7 +4,7 @@ import sys
 import numpy as np
 import requests
 import random
-
+import time
 import jsg
 import ptz
 
@@ -85,8 +85,9 @@ def grab_frame(capture_device, is_cctv):
 
 capture_device = init_capture_device(True) # SET TO TRUE FOR CCTV STREAM
 command_this_frame = 0
-
-while True:
+f = open('full_cycle_py.log','w')
+for cycle in range(1, 100):
+    millis = int(round(time.time() * 1000))
     #source = grab_frame(capture_device, True) # SET TO TRUE FOR CCTV STREAM
     cap = cv2.VideoCapture("http://ptz:ptz@129.241.154.24/mjpg/video.mjpg")
     val, source = cap.read()
@@ -115,12 +116,12 @@ while True:
             for item in delta_array:
                 if abs(delta_array[0]) > 0.1 and (cv2.getTickCount()-ptz_last_command_tick > ptz_gracetime_ticks):
                     print "pan",item
-                    #ptz.relative_pan(P_GAIN_PAN*delta_array[0])
+                    ptz.relative_pan(P_GAIN_PAN*delta_array[0])
                     command_this_frame = 1
                     
                 if abs(delta_array[1]) > 0.5 and (cv2.getTickCount()-ptz_last_command_tick > ptz_gracetime_ticks):
                     print "tilt",-0.01*delta_array[0]
-                    #ptz.tilt(P_GAIN_TILT*delta_array[1])
+                    ptz.tilt(P_GAIN_TILT*delta_array[1])
                     command_this_frame = 1
                     
                 if command_this_frame:
@@ -160,3 +161,15 @@ while True:
     elif key == 97:
         print "Left"
         ptz.relative_pan(P_GAIN_PAN*1000)
+    millis_end = int(round(time.time() * 1000))
+    print "cycleno",cycle
+
+
+    deltamillis = millis_end - millis
+
+    f.write(str(cycle)) # python will convert \n to os.linesep
+    f.write(" ") # python will convert \n to os.linesep
+    f.write(str(deltamillis)) # python will convert \n to os.linesep
+    f.write("\n") # python will convert \n to os.linesep
+
+f.close() # you can omit in most cases as the destructor will call it

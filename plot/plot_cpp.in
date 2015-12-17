@@ -1,5 +1,18 @@
+
+if (!strstrt(GPVAL_COMPILE_OPTIONS,"+STATS")) {
+    print "No support for stats command"
+}
+
 set terminal png
 set output "output.png"
 set yrange [0:100]
+set title "C++ without OCL"
+set xlabel "x cycles"
+set ylabel "y milliseconds"
+
+
+stats 'full_cycle.log' index 0 using 2 prefix "A"
+
 plot "full_cycle.log" using 1:2 with lines title "C++ t cycle", \
-       "after_grab.log" using 1:2 with lines title "C++ t grab",
+       "after_grab.log" using 1:2 with lines title "C++ t grab", \
+              A_mean title " Mean cycle t"
