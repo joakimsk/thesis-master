@@ -181,7 +181,7 @@ int main(int argc, char * const argv[]) {
     cv::startWindowThread();
 
     int cyclenr = 0;
-    while(cyclenr <  100){
+    while(cyclenr <  1000){
         auto chrono_cycle_start = std::chrono::steady_clock::now();
 
         //std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
