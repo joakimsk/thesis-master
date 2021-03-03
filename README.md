@@ -1,7 +1,7 @@
-master_code
+thesis-master
 ===========
 
-Implementation for the master thesis due 17th of December 2015.
+Implementation for master thesis due 17th of December 2015, fulfilment of MSc in Technical Cybernetics at NTNU.
 
 Mainly developed on OS X 10.10.5, primary execution platform is Linux (Ubuntu 12.04).
 
